@@ -1,0 +1,165 @@
+http://xxnull.blog.163.com/blog/static/1763981572013318111048458/
+lua c类方法
+
+ http
+	 package
+	 cookie set
+	
+ reponse
+	100 301
+	400 / 200 fake 404
+	200 
+
+1: 爬行 
+robot.txt 
+main --> list
+ web2.0
+flash
+js
+
+2: 检测
+系统版本
+	公开漏洞
+路径
+	默认后台
+	路径直接访问
+页面
+	暴露信息
+变量
+	xss
+	injection
+
+3：驱动支持
+TCP socket
+HTTP
+ssl HTTP
+
+
+===============================
+OS system
+
+boost
+openssl
+g++ -std11
+mysql
+
+mysql: call api/ build database/ design tables : 1周
+IOCP/SSL: finished
+HTTP protocal: request&reponse package / cookie get&set / send&recv queue / Content-type delivil / : 2周
+Data tools: decode & encode(base64 url) / charset ( utf8 GBK / unicode ascII ) / regex ... / : 2周 随时扩展
+Other: flash/js/ : 解析 Content 随时扩展
+Crawl: 服务器默认路径字典 / 后台字典 / url 相对路径定位 / 去重 / 防循环路径 / 防 signout、quit
+Scan: 
+	静态分析
+		源码泄露 / 敏感信息泄露 / 可疑外链 / hidden value
+	反射分析
+		页面、句柄: CSRF、重定向、可执行功能...
+		变量：XSS、injection...
+前期，，，学习策略添加策略，然后更新驱动支持，差不多是一个策略一周
+
+Database: 阈值清理 or 任务后清理 / **导出 or 上传中心** / 
+
+report: print html from database: 1周
+	**print other type from html**
+
+log: running status log : 2-3天
+	crash / debug log
+	to db / to file
+
+
+路径字典
+弱密码 用户名、密码 字典
+敏感字列表
+XSS
+SQL injection
+
+
+
+================================================
+vul_describe.db
+
+<ROOT>
+<VUL>
+<UNIONID>RS_001</UNIONID>
+<CNAME>路径泄露</CNAME>
+<NAME>Path leak</NAME>
+<CVE>CVE2013</CVE>
+<LEVEL>LOW</LEVEL>
+<SERVER>all</SERVER>
+<DESCRIBE><![CDATA[系统路径经由xxx方式暴露出来。。。]]></DESCRIBE>
+<FIX><![CDATA[配置服务器xxx字段，限制xxx权限]]></FIX>
+</VUL>
+<VUL>
+<UNIONID>RS_002</UNIONID>
+...
+</VUL>
+...
+</ROOT>
+==============================================
+
+
+==============================================
+main.lua
+
+GLOBLE_VERSION = "1.0.0.1"
+GLOBLE_TRIGGER_TYPE = "MAIN"
+
+function Load_DB_Mysql()
+InsertNewPlugins("filePathName");
+InsertNewPlugins("filePathName");
+InsertNewPlugins("filePathName");
+end
+
+function Load_DB_DB2()
+InsertNewPlugins("filePathName");
+InsertNewPlugins("filePathName");
+end
+
+function Init_Lua(a,b,c)
+InsertNewPlugins("filePathName");
+InsertNewPlugins("filePathName1<|>filePathName2<|>...");
+Load_DB_Mysql()
+--Load_DB_DB2()
+return "","","";
+end
+
+==============================================
+Plugin.lua
+
+
+GLOBLE_VERSION = "1.0.0.1"
+GLOBLE_UNIONID = "RS_001"
+GLOBLE_TRIGGER_TYPE = "ONCE||URL=JSP||"
+
+
+function Init_Lua( url, request, reponse )
+-- do something
+print("init_lua\n");
+return "Check_aa", "", "";
+end
+
+function Check_aa( url, request, reponse )
+-- do something
+print("Check_aa\n");
+return "Check_bb", "", "";
+end
+
+function Check_bb( url, request, reponse )
+-- do something
+print("Check_bb\n");
+Check_aa("1","2","3");
+Check_cc("","","");
+return "Check_cc", "", "";
+end
+
+function Check_cc( url, request, reponse )
+-- do something
+print("Check_cc\n");
+
+if url == "123" then
+return "","", GLOBLE_UNIONID;
+else
+return "Check_cc","","";
+end;
+
+end

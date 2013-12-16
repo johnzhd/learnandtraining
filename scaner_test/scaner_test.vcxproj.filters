@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="socket">
+      <UniqueIdentifier>{f0fffbb8-1cb9-4f4f-9af4-18b92ea0cbce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="task">
+      <UniqueIdentifier>{77bc5369-c070-4745-96be-8b08df06969a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="server">
+      <UniqueIdentifier>{c8e6d2b3-d5a1-4d76-86ac-aa52ca9cc015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{5527e96a-261a-43d7-82fe-2a640c849eb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="db">
+      <UniqueIdentifier>{16906876-ce5b-4048-8f2d-344e5b76bdd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="socket\http">
+      <UniqueIdentifier>{c8426ff5-e9f7-4dcb-ad50-f47a5d21d03f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{73b07cda-74aa-4e53-b3b4-96cceae133ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="zlib">
+      <UniqueIdentifier>{f256ebbb-5f8a-4104-9f23-5669998fb52c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="log">
+      <UniqueIdentifier>{d71c76d5-cd15-4084-b1ce-a108dd164b27}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\socket\connect_socket.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\socket\demo_use.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\socket\iocp_server.hpp">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="..\http\http.hpp">
+      <Filter>socket\http</Filter>
+    </ClInclude>
+    <ClInclude Include="..\socket\connect_ssl.h">
+      <Filter>socket</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_pool.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_work_queue.h">
+      <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="system.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="task_api.h">
+      <Filter>task</Filter>
+    </ClInclude>
+    <ClInclude Include="db_api.h">
+      <Filter>db</Filter>
+    </ClInclude>
+    <ClInclude Include="task_work.h">
+      <Filter>task</Filter>
+    </ClInclude>
+    <ClInclude Include="policy_work.h">
+      <Filter>task</Filter>
+    </ClInclude>
+    <ClInclude Include="task_data.h">
+      <Filter>task</Filter>
+    </ClInclude>
+    <ClInclude Include="http_tools.hpp">
+      <Filter>socket\http</Filter>
+    </ClInclude>
+    <ClInclude Include="charset.h">
+      <Filter>socket\http</Filter>
+    </ClInclude>
+    <ClInclude Include="gzip.h">
+      <Filter>zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="system_log.h">
+      <Filter>log</Filter>
+    </ClInclude>
+    <ClInclude Include="file_base_tools.h">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="plugins_loader.h">
+      <Filter>system</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="scaner_test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\socket\connect_socket.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\socket\demo_use.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\socket\iocp_server.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="..\http\http.cpp">
+      <Filter>socket\http</Filter>
+    </ClCompile>
+    <ClCompile Include="..\socket\connect_ssl.cpp">
+      <Filter>socket</Filter>
+    </ClCompile>
+    <ClCompile Include="thread_pool.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="thread_work_queue.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="system.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="task_api.cpp">
+      <Filter>task</Filter>
+    </ClCompile>
+    <ClCompile Include="db_api.cpp">
+      <Filter>db</Filter>
+    </ClCompile>
+    <ClCompile Include="task_work.cpp">
+      <Filter>task</Filter>
+    </ClCompile>
+    <ClCompile Include="policy_work.cpp">
+      <Filter>task</Filter>
+    </ClCompile>
+    <ClCompile Include="task_data.cpp">
+      <Filter>task</Filter>
+    </ClCompile>
+    <ClCompile Include="http_tools.cpp">
+      <Filter>socket\http</Filter>
+    </ClCompile>
+    <ClCompile Include="charset.cpp">
+      <Filter>socket\http</Filter>
+    </ClCompile>
+    <ClCompile Include="gzip.cpp">
+      <Filter>zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="test_http_main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="system_log.cpp">
+      <Filter>log</Filter>
+    </ClCompile>
+    <ClCompile Include="file_base_tools.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins_loader.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
