@@ -372,7 +372,7 @@ static bool temporary_buffer_equals(
   // TODO(jdtang): See if the extra strlen is a performance problem, and replace
   // it with an explicit sizeof(literal) if necessary.  I don't think it will
   // be, as this is only used in a couple of rare states.
-  int text_len = strlen(text);
+  size_t text_len = strlen(text);
   return text_len == buffer->length &&
       memcmp(buffer->data, text, text_len) == 0;
 }
@@ -540,7 +540,7 @@ static StateResult emit_current_tag(GumboParser* parser, GumboToken* output) {
     // token, but it's still initialized as normal, so it must be manually
     // deallocated.  There may also be attributes to destroy, in certain broken
     // cases like </div</th> (the "th" is an attribute there).
-    for (int i = 0; i < tag_state->_attributes.length; ++i) {
+    for (unsigned int i = 0; i < tag_state->_attributes.length; ++i) {
 		gumbo_destroy_attribute(parser, (GumboAttribute*)tag_state->_attributes.data[i]);
     }
     gumbo_parser_deallocate(parser, tag_state->_attributes.data);
@@ -563,7 +563,7 @@ static StateResult emit_current_tag(GumboParser* parser, GumboToken* output) {
 // avoid a memory leak.
 static void abandon_current_tag(GumboParser* parser) {
   GumboTagState* tag_state = &parser->_tokenizer_state->_tag_state;
-  for (int i = 0; i < tag_state->_attributes.length; ++i) {
+  for (unsigned int i = 0; i < tag_state->_attributes.length; ++i) {
     gumbo_destroy_attribute(parser, (GumboAttribute*)tag_state->_attributes.data[i]);
   }
   gumbo_parser_deallocate(parser, tag_state->_attributes.data);
@@ -782,7 +782,7 @@ static bool finish_attribute_name(GumboParser* parser) {
   assert(tag_state->_attributes.capacity);
 
   GumboVector* /* GumboAttribute* */ attributes = &tag_state->_attributes;
-  for (int i = 0; i < attributes->length; ++i) {
+  for (unsigned int i = 0; i < attributes->length; ++i) {
     GumboAttribute* attr = (GumboAttribute*)attributes->data[i];
     if (strlen(attr->name) == tag_state->_buffer.length &&
         memcmp(attr->name, tag_state->_buffer.data,
@@ -2947,6 +2947,8 @@ bool gumbo_lex(GumboParser* parser, GumboToken* output) {
       utf8iterator_next(&tokenizer->_input);
     }
   }
+
+  return false;
 }
 
 void gumbo_token_destroy(GumboParser* parser, GumboToken* token) {
@@ -2961,7 +2963,7 @@ void gumbo_token_destroy(GumboParser* parser, GumboToken* token) {
           parser, (void*) token->v.doc_type.system_identifier);
       return;
     case GUMBO_TOKEN_START_TAG:
-      for (int i = 0; i < token->v.start_tag.attributes.length; ++i) {
+      for (unsigned int i = 0; i < token->v.start_tag.attributes.length; ++i) {
         GumboAttribute* attr = (GumboAttribute*)token->v.start_tag.attributes.data[i];
         if (attr) {
           // May have been nulled out if this token was merged with another.

@@ -115,7 +115,7 @@ namespace charset
 
 	};
 
-	bool any_to_unicode( std::string charset_http, std::vector<unsigned char>& in, size_t count_in, std::wstring out )
+	bool any_to_unicode( std::string charset_http, std::vector<unsigned char>& in, size_t count_in, std::wstring& out )
 	{
 		std::string str_temp(in.begin(), in.begin()+count_in);
 

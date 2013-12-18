@@ -410,7 +410,7 @@ static bool token_has_attribute(const GumboToken* token, const char* name) {
 static bool attribute_matches(
     const GumboVector* attributes, const char* name, const char* value) {
   const GumboAttribute* attr = gumbo_get_attribute(attributes, name);
-  return attr ? strcasecmp(value, attr->value) == 0 : false;
+  return attr ? _strcasecmp(value, attr->value) == 0 : false;
 }
 
 // Checks if the value of the specified attribute is a case-sensitive match
@@ -425,7 +425,7 @@ static bool attribute_matches_case_sensitive(
 static bool all_attributes_match(
     const GumboVector* attr1, const GumboVector* attr2) {
   int num_unmatched_attr2_elements = attr2->length;
-  for (int i = 0; i < attr1->length; ++i) {
+  for (unsigned int i = 0; i < attr1->length; ++i) {
     const GumboAttribute* attr = (GumboAttribute*)attr1->data[i];
     if (attribute_matches_case_sensitive(attr2, attr->name, attr->value)) {
       --num_unmatched_attr2_elements;
@@ -530,7 +530,7 @@ static bool is_in_static_list(
     const char* needle, const GumboStringPiece* haystack, bool exact_match) {
   for (int i = 0; haystack[i].length > 0; ++i) {
     if ((exact_match && !strcmp(needle, haystack[i].data)) ||
-        (!exact_match && !strcasecmp(needle, haystack[i].data))) {
+        (!exact_match && !_strcasecmp(needle, haystack[i].data))) {
       return true;
     }
   }
@@ -637,7 +637,7 @@ static GumboError* add_parse_error(GumboParser* parser, const GumboToken* token)
   extra_data->parser_state = state->_insertion_mode;
   gumbo_vector_init(parser, state->_open_elements.length,
                    &extra_data->tag_stack);
-  for (int i = 0; i < state->_open_elements.length; ++i) {
+  for (unsigned int i = 0; i < state->_open_elements.length; ++i) {
     const GumboNode* node = (GumboNode*)state->_open_elements.data[i];
     assert(node->type == GUMBO_NODE_ELEMENT);
     gumbo_vector_add(parser, (void*) node->v.element.tag,
@@ -771,7 +771,7 @@ static void insert_node(
   node->index_within_parent = index;
   gumbo_vector_insert_at(parser, (void*) node, index, children);
   assert(node->index_within_parent < children->length);
-  for (int i = index + 1; i < children->length; ++i) {
+  for (unsigned int i = index + 1; i < children->length; ++i) {
     GumboNode* sibling = (GumboNode*)children->data[i];
     sibling->index_within_parent = i;
     assert(sibling->index_within_parent < children->length);
@@ -1156,7 +1156,7 @@ static void add_formatting_element(GumboParser* parser, const GumboNode* node) {
 
 static bool is_open_element(GumboParser* parser, const GumboNode* node) {
   GumboVector* open_elements = &parser->_parser_state->_open_elements;
-  for (int i = 0; i < open_elements->length; ++i) {
+  for (unsigned int i = 0; i < open_elements->length; ++i) {
     if (open_elements->data[i] == node) {
       return true;
     }
@@ -1185,7 +1185,7 @@ GumboNode* clone_node(
 
   const GumboVector* old_attributes = &node->v.element.attributes;
   gumbo_vector_init(parser, old_attributes->length, &element->attributes);
-  for (int i = 0; i < old_attributes->length; ++i) {
+  for (unsigned int i = 0; i < old_attributes->length; ++i) {
     const GumboAttribute* old_attr = (GumboAttribute*)old_attributes->data[i];
     GumboAttribute* attr =
         (GumboAttribute*)gumbo_parser_allocate(parser, sizeof(GumboAttribute));

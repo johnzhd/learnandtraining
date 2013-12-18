@@ -218,7 +218,7 @@ GumboTag gumbo_tag_enum(const char* tagname) {
     // TODO(jdtang): strcasecmp is non-portable, so if we want to support
     // non-GCC compilers, we'll need some #ifdef magic.  This source already has
     // pretty significant issues with MSVC6 anyway.
-    if (strcasecmp(tagname, kGumboTagNames[i]) == 0) {
+    if (_strcasecmp(tagname, kGumboTagNames[i]) == 0) {
       return (GumboTag)i;
     }
   }

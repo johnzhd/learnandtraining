@@ -64,6 +64,7 @@ namespace http_tools
 
 	std::string get_protocal( const std::string & url_ );
 	std::string get_domain( const std::string & url_ );
+	std::string get_page( const std::string & url_ );
 	std::string get_port( const std::string & url_ );
 	bool get_url_info( const std::string & url_,
 		std::string* protocal, std::string* domain, std::string* port, std::string* path,
@@ -72,6 +73,8 @@ namespace http_tools
 	std::string get_port_by_protocal( std::string protocal );
 
 	std::string format_url( std::string origin_url );
+
+	std::string format_head(std::string head);
 	
 	bool is_ssl( const std::string& protocal );
 
@@ -256,6 +259,6 @@ namespace http_tools
 	};
 
 	bool http_reponse_check( std::vector<unsigned char>& content );
-	bool http_reponse_completed( std::vector<unsigned char>& content, std::vector<http_info>& v_list );
+	bool http_reponse_completed( std::vector<unsigned char>& content, std::vector<http_info>& v_list, std::string& trigger );
 };
 

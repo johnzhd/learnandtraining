@@ -10,32 +10,36 @@
 #include "system.h"
 #include "task_api.h"
 
+#include <string>
 
-void function_start()
+std::string start_task;
+
+void function_start(bool b)
 {
-	std::string str;
-	str = system_api::run();
-
-	High_log("Quit from system run. %s\n",str.c_str());
+	if ( b )
+	{
+		Noise_log("[%s](%d) %s\n", __FUNCTION__, __LINE__, "Call task_work::start in thread");
+		boost::thread io_server_thread(boost::bind(task_work::start,start_task,"",""));
+	};
+	
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	system_log::set_log_show_type(system_log::Debug);
+	system_log::set_log_show_type(system_log::Noise);
+	if ( argc < 2 )
+	{
+		printf( " No scan main url info. \n>scaner_test http://www.rising.com.cn\n" );
+		return 0;
+	};
+	start_task = argv[1];
 
-	(argc);
-	(argv);
-	boost::thread io_server_thread(function_start);
-
-	// do not use : t.join();
-
-	Sleep(20);
-
-
+	Noise_log("[%s](%d) %s\n", __FUNCTION__, __LINE__, "Call function_start in thread");
 	
-	io_server_thread.join();
+	std::string str;
+	str = system_api::run(function_start);
 
-
+	Noise_log("[%s](%d) system_api::run return %s\n", __FUNCTION__, __LINE__, str);
 
 
 	return 0;

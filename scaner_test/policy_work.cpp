@@ -61,9 +61,14 @@ namespace policy_api
 	{
 		if ( trigger.empty() )
 			return false;
+		std::vector<std::string> v_t;
+		if ( false == divil_trigger(trigger, v_t) )
+			return false;
+
 		for ( auto& str : v_trigger)
 		{
-			if( trigger.find( str ) != std::string::npos )
+			// Rule One: Match
+			if ( std::find( v_t.begin(), v_t.end(), str ) != v_t.end() )
 				return true;
 		};
 		return false;
@@ -74,18 +79,58 @@ namespace policy_api
 			return false;
 		size_t nf,nb;
 		std::string str_temp;
-		v_t.clear();
 		for ( nf = 0, nb = trigger.find("||",nf); nf < trigger.length(); nf = nb + 2, nb = trigger.find("||",nf))
 		{
+			if ( nb == std::string::npos )
+			{
+				nb = trigger.length();
+			};
 			str_temp = trigger.substr(nf,nb-nf);
 			if ( str_temp.empty() )
 				continue;
 
-			std::transform(str_temp.begin(),str_temp.end(),str_temp.begin(),tolower);
-			v_t.push_back(str_temp);
+			std::transform(str_temp.begin(),str_temp.end(),str_temp.begin(),toupper);
+			if ( v_t.end() == std::find(v_t.begin(), v_t.end(), str_temp) )
+				v_t.push_back(str_temp);
 		};
 		return false == v_t.empty();
 	};
+
+	std::string trigger_base::format_trigger(std::vector<std::string>& v_t )
+	{
+		if ( v_t.empty() )
+			return "";
+		std::string str;
+
+		for ( auto s : v_t )
+		{
+			str += s + "||";
+		};
+		
+		return str;
+	};
+
+	std::string trigger_base::format_trigger(std::string trigger)
+	{
+		std::vector<std::string> v_t;
+		if ( false == divil_trigger(trigger,v_t) )
+			return "";
+		return format_trigger(v_t);
+	};
+
+	std::string trigger_base::format_trigger(std::string trigger, std::string add)
+	{
+		std::string str;
+		std::vector<std::string> v_t;
+		divil_trigger(trigger,v_t);
+		divil_trigger(add,v_t);
+
+		return format_trigger(v_t);
+	};
+
+
+
+
 };
 
 
@@ -182,7 +227,7 @@ bool policy_base_server::init()
 	}
 	catch (std::string& e)
 	{
-		printf("%s %s %s\n",__FUNCTION__,__LINE__,e.c_str());
+		High_log( "Policy init exception: %s\n", e );
 		clear();
 	}
 	return false;
@@ -274,7 +319,7 @@ bool policy_base_server::get_policys( std::string trigger, std::vector<policy_wo
 		};
 	}
 
-	return policy_list.empty();
+	return false == policy_list.empty();
 };
 
 
@@ -515,7 +560,7 @@ bool policy_work::call_function( std::vector<std::string>& v_out, const char * n
 	lua_pop(lu_ptr, nret);
 	return b;
 }
-
+#ifdef _DEBUG
 bool policy_work::run_demo()
 {
 	_ASSERT( 0 == lua_gettop(lu_ptr) );
@@ -537,7 +582,7 @@ bool policy_work::run_demo()
 	return true;
 }
 
-
+#endif
 
 
 

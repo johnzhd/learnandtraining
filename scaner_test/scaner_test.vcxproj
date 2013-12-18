@@ -135,7 +135,9 @@
     <ClCompile Include="http_tools.cpp" />
     <ClCompile Include="plugins_loader.cpp" />
     <ClCompile Include="policy_work.cpp" />
-    <ClCompile Include="scaner_test.cpp" />
+    <ClCompile Include="scaner_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -148,6 +150,7 @@
     <ClCompile Include="test_http_main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="test_signal2.cpp" />
     <ClCompile Include="thread_pool.cpp" />
     <ClCompile Include="thread_work_queue.cpp" />
   </ItemGroup>

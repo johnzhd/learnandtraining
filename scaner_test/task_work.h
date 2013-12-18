@@ -1,6 +1,8 @@
 #pragma once
 
-
+#include <set>
+#include <string>
+#include <vector>
 #include <atomic> 
 
 #include "task_data.h"
@@ -14,9 +16,9 @@ namespace task_work
 	void pull_and_download_url(task_data::task_map_ptr map_ptr);
 
 
-	size_t crawl_page( std::vector<wchar_t>& body, std::vector<std::string>* url_list = nullptr );
-	size_t crawl_page( const std::wstring& body, std::vector<std::string>* url_list = nullptr );
-	size_t crawl_page( const std::string& body, std::vector<std::string>* url_list = nullptr );
+	inline size_t crawl_page( std::vector<wchar_t>& body, std::set<std::string>* url_list, std::string page_url );
+	inline size_t crawl_page( const std::wstring& body, std::set<std::string>* url_list, std::string page_url );
+	size_t crawl_page( const std::string& body, std::set<std::string>* url_list, const std::string& page_url );
 
 
 	void run_policy(task_data::task_map_ptr map_ptr, size_t url_no, policy_api::policy_work_ptr policy_ptr);

@@ -82,7 +82,10 @@ namespace system_log
 		switch (ty)
 		{
 		case system_log::High_Err:
-			g_log_static_keeper.show_err( str );
+			if ( g_log_static_keeper.pass(ty) )
+			{
+				g_log_static_keeper.show_err( str );
+			}
 			g_log_static_keeper.insert_keeper(str);
 			break;
 		case system_log::Warning:

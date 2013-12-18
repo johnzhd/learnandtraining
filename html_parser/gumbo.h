@@ -50,8 +50,8 @@
 //#endif
 
 #ifdef _MSC_VER
-#define strcasecmp stricmp 
-#define strncasecmp strnicmp
+#define _strcasecmp _stricmp 
+#define _strncasecmp _strnicmp
 #endif
 /**
  * A struct representing a character position within the original text buffer.

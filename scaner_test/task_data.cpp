@@ -43,7 +43,7 @@ namespace task_data
 		std::tm t_local;
 		std::time(&t);
 		std::tm* curr = boost::date_time::c_time::localtime(&t, &t_local);
-		str += system_log::format( "_%04d_%02d_%02d", curr->tm_year, curr->tm_mon, curr->tm_mday );
+		str += system_log::format( "_%04d_%02d_%02d", curr->tm_year+1900, curr->tm_mon, curr->tm_mday );
 
 		
 		return str;  
@@ -51,46 +51,9 @@ namespace task_data
 
 	};
 
-	std::string task_start_struct::format_url(std::string url)
-	{
-		std::string str[5];
-		if ( false == http_tools::get_url_info(url,&str[0],&str[1],&str[2],&str[3],&str[4]) )
-			return "";
+	
 
-		return str[0]+"://"+str[1]+ ":" + str[2]+"/"+str[3]+"?"+str[4];
-	};
-
-	std::string task_start_struct::format_head(std::string head)
-	{
-		size_t npos;
-		npos = head.find_first_not_of("\r\n \t");
-		head.erase(0,npos);
-		npos = head.find_last_not_of("\r\n \t");
-		if( npos != std::string::npos )
-			head.erase(npos);
-
-		if ( head.empty())
-			return "";
-
-		head += "\r\n";
-		return head;
-	};
-
-	std::string task_start_struct::format_trigger(std::string trigger)
-	{
-		size_t npos;
-		npos = trigger.find_first_not_of("\r\n \t");
-		trigger.erase(0,npos);
-		npos = trigger.find_last_not_of("\r\n \t|");
-		if( npos != std::string::npos )
-			trigger.erase(npos);
-
-		if ( trigger.empty() )
-			return "";
-
-		trigger += "||";
-		return trigger;
-	};
+	
 
 
 };
@@ -189,6 +152,8 @@ task_map::task_map(task_start_struct_ptr ptr)
 	next_no = 0;
 
 	next_work_no = 0;
+
+	finished_no = 0;
 };
 
 task_map::~task_map()
@@ -202,31 +167,7 @@ std::string task_map::get_task_union_id()
 
 bool task_map::insert_new_url( std::string url )
 {
-	assert(!url.empty());
-	if ( url.empty() )
-		return false;
-	boost::mutex::scoped_lock lock(url_mutex);
-	auto it = url_no_map.find(url);
-	if ( it != url_no_map.end() )
-		return true;
-
-	size_t no = next_no++; // maybe use other algorithm
-
-	try
-	{
-	url_no_map.insert(std::pair<std::string,size_t>(url,no));
-	no_url_map.insert(std::pair<size_t,std::string>(no,url));
-	url_list.insert(std::pair<size_t,task_url_struct_ptr>(no, task_url_struct_ptr(new task_url_struct(url))));
-	}
-	catch (...)
-	{
-		High_log("%s %s memory err.",__FILE__,__LINE__);
-		return false;
-	};
-
-	return true;
-
-
+	return insert_new_url( task_url_struct_ptr(new task_url_struct(url)) );
 }
 
 bool task_map::insert_new_url( task_url_struct_ptr url )
@@ -234,27 +175,35 @@ bool task_map::insert_new_url( task_url_struct_ptr url )
 	assert(url != nullptr);
 	if ( url == nullptr )
 		return false;
+	
+	url->url_origin = http_tools::format_url(url->url_origin);
 	boost::mutex::scoped_lock lock(url_mutex);
-	auto it = url_no_map.find(url->url_origin);
-	if ( it != url_no_map.end() )
-		return true;
 
 	size_t no = next_no++; // maybe use other algorithm
 	try
 	{
-	url_no_map.insert(std::pair<std::string,size_t>(url->url_origin,no));
-	no_url_map.insert(std::pair<size_t,std::string>(no,url->url_origin));
-	url_list.insert(std::pair<size_t,task_url_struct_ptr>(no, url));
+		std::pair<std::map<std::string,size_t>::iterator,bool> ret;
+		ret = url_no_map.insert(std::pair<std::string,size_t>(url->url_origin,no));
+		if ( ret.second == false ) // already exist
+			return true;
+
+		assert(no == ret.first->second);
+
+		no_url_map.insert(std::pair<size_t,std::string>(ret.first->second,url->url_origin));
+		url_list.insert(std::pair<size_t,task_url_struct_ptr>(ret.first->second, url));
 	}
 	catch (...)
 	{
+		url_no_map.erase(url->url_origin);
+		no_url_map.erase(no);
+		url_list.erase(no);
 		High_log("%s %s memory err.",__FILE__,__LINE__);
 		return false;
 	};
 	return true;
 };
 
-bool task_map::insert_new_url( std::vector<std::string> url_list )
+bool task_map::insert_new_url( std::set<std::string>& url_list )
 {
 	if ( url_list.empty() )
 		return false;
@@ -264,7 +213,9 @@ bool task_map::insert_new_url( std::vector<std::string> url_list )
 	{
 		b = insert_new_url(url) || b; //Be careful!
 	};
-	return true;
+	size_t no = next_no;
+	Noise_log("[%s] next no %d.\n", __FUNCTION__, no );
+	return b;
 };
 
 bool task_map::fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr )
@@ -274,13 +225,15 @@ bool task_map::fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr )
 	if ( next_no <= next_work_no )
 		return false;
 
-	boost::mutex::scoped_lock lock(url_mutex);
+	//boost::mutex::scoped_lock lock(url_mutex);
 
 	while ( next_work_no<next_no )
 	{
 		url_no = next_work_no++;
+		
 		if ( get_one_url( url_no,url_ptr ) && url_ptr->running_thread == -2 )
 		{
+			Noise_log("[%s] work no %d / %d.\n", __FUNCTION__, url_no, next_no.load(std::memory_order_relaxed) );
 			return true;
 		}
 	};
@@ -288,33 +241,69 @@ bool task_map::fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr )
 	return false;
 };
 
+void task_map::finished_one_url( size_t url_no )
+{
+	task_url_struct_ptr ptr = nullptr;
+
+	// only lock when search running
+	{
+		boost::mutex::scoped_lock lock(url_mutex);
+		auto it = url_list.find(url_no);
+		if ( it == url_list.end() || it->second == nullptr)
+			return ;
+		ptr = it->second;
+	}
+
+	finished_one_url(ptr);
+}
+
 void task_map::finished_one_url( task_url_struct_ptr url_ptr )
 {
 	if ( --url_ptr->running_thread <= 0 )
 	{
 		url_ptr->running_thread = -1;
 	}
+
+	if ( url_ptr->running_thread == -1 )
+	{
+		Noise_log("[%s](%d) Finished one url %s %s \n", __FUNCTION__, __LINE__, get_task_union_id(), url_ptr->url_origin.c_str() );
+		test_task_finished_quit(); 
+	};
 };
 
-void task_map::finished_one_url( size_t url_no )
+void task_map::test_task_finished_quit()
 {
-	boost::mutex::scoped_lock lock(url_mutex);
-	auto it = url_list.find(url_no);
-	if ( it == url_list.end() || it->second == nullptr)
-		return ;
+	task_url_struct_ptr ptr;
+	size_t i = finished_no;
+	for ( ; i<next_no ; i++ )
+	{
+		if ( false == get_one_url(i,ptr) )
+		{
+			continue;
+		}
+		if ( ptr->running_thread != -1 )
+		{
+			return ;
+		};
+		if ( i > finished_no )
+			finished_no = i;
+	};
 
-	finished_one_url(it->second);
-}
+	task_map_list_ptr manager = get_globle_task_map();
+	manager->finished_one(get_task_union_id());
+	
+};
+
 
 bool task_map::is_url_empty()
 {
-	if ( next_work_no >= next_no )
-		return true;
-
-	return false;
+	return next_work_no >= next_no;
 };
 
-
+int task_map::url_list_remain()
+{
+	return next_no - next_work_no;
+};
 
 
 
@@ -336,17 +325,12 @@ bool task_map::insert_result( size_t url_no, task_result_struct_ptr result_ptr )
 	{
 		return false;
 	};
+	assert( no_url_map.find(url_no) != no_url_map.end() );
 	boost::mutex::scoped_lock lock(result_mutex);
-	auto it = result_list.find(url_no);
-	if ( it == result_list.end() )
-	{
-		result_list.insert(std::pair<size_t, std::vector<task_result_struct_ptr>>(url_no,std::vector<task_result_struct_ptr>()));
-		it = result_list.find(url_no);
-		if ( it == result_list.end() )
-			return false;
-	}
 
-	it->second.push_back(result_ptr);
+	//std::pair<std::map<size_t, std::vector<task_result_struct_ptr>>::iterator,bool> ret;
+	//ret = result_list.insert(std::pair<size_t, std::vector<task_result_struct_ptr>>(url_no,std::vector<task_result_struct_ptr>()));
+	result_list[url_no].push_back(result_ptr);
 	
 	return true;
 };
@@ -375,6 +359,7 @@ bool task_map_list::insert_new(task_map_ptr ptr )
 	if ( ptr == nullptr || ptr->start_ptr == nullptr || ptr->get_task_union_id().empty() )
 		return false;
 
+	Noise_log("[%s](%d) New one task %s\n", __FUNCTION__, __LINE__, ptr->get_task_union_id() );
 	boost::mutex::scoped_lock lock(op_mutex);
 	m_list.push_back(ptr);
 
@@ -388,6 +373,7 @@ void task_map_list::finished_one(std::string task_union_id)
 	{
 		if ( (*it)->get_task_union_id() == task_union_id)
 		{
+			Noise_log("[%s](%d) Finished one task %s\n", __FUNCTION__, __LINE__, task_union_id );
 			(*it)->start_ptr = nullptr;
 			m_list.erase(it);
 			return;

@@ -17,7 +17,7 @@ bool ungzip(std::vector<unsigned char>& in, size_t count_in, std::vector<unsigne
 	compr = reinterpret_cast<char*>(&in[0]);
 	comprLen =count_in;
 	out.clear();
-	out.resize( count_in * 4,0 );
+	out.resize( count_in * 10,0 );
 	uncompr = reinterpret_cast<char*>(&out[0]);
 	uncomprLen = out.size();
 

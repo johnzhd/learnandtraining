@@ -3,12 +3,17 @@
 
 #include <boost/bind.hpp>
 
+#include <thread>
+
 
 namespace thread_pool_api
 {
+	thread_pool_ptr g_ptr = nullptr;
 	thread_pool_ptr get_pool()
 	{
-		return thread_pool_ptr( new thread_pool() );
+		if ( g_ptr == nullptr )
+			g_ptr.reset(new thread_pool());
+		return g_ptr;
 	}
 }
 
@@ -71,16 +76,26 @@ bool thread_pool::is_running()
 
 void thread_pool::thread_run()
 {
+	
 	while ( is_running() )
 	{
-		SET_WAIT(locker);
 		function_type f;
+		boost::mutex::scoped_lock thread_lock_action(thread_action_mutex);
 
 		while ( false == pull(f) )
-			thread_wait_condition.wait( locker );
+		{
+			thread_wait_condition.wait( thread_lock_action );
+			Noise_log("[thread] Awake!! running count %1%, id %2%, queue count %3%.\n", running_count.load(std::memory_order_relaxed), std::this_thread::get_id(), work_queue_content.size());
+		};
+
+		thread_wait_condition.notify_one();
+
+		
 		running_count++;
+		Noise_log("[thread] running count %1%, id %2%, queue count %3%.\n", running_count.load(std::memory_order_relaxed), std::this_thread::get_id(), work_queue_content.size());
 		f();
 		running_count--;
+		
 	}
 };
 
@@ -89,7 +104,8 @@ bool thread_pool::push( function_type func )
 	if ( false == is_running() )
 		return false;
 	work_queue_content.pushback(func);
-	thread_wait_condition.notify_one();
+	thread_wait_condition.notify_all();
+
 	return true;
 }
 

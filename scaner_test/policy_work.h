@@ -22,7 +22,7 @@ extern "C" {
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/noncopyable.hpp>
 
-#define POLICY_STR_GET_APP_PATH	(std::string(""))
+#define POLICY_STR_GET_APP_PATH	file_base_tools::get_app_path()
 
 #define POLICY_STR_MAIN_FILE ("main.lua")
 #define POLICY_STR_VERSION	("GLOBLE_VERSION")
@@ -50,6 +50,9 @@ protected:
 	std::vector<std::string> v_trigger;
 public:
 	static bool divil_trigger( std::string trigger, std::vector<std::string>& v );
+	static std::string format_trigger(std::vector<std::string>& v_t );
+	static std::string format_trigger(std::string trigger);
+	static std::string format_trigger(std::string trigger, std::string add);
 };
 	
 class policy_base 
@@ -100,7 +103,9 @@ public:
 	bool empty() const;
 	void clear();
 public:
+#ifdef _DEBUG
 	bool run_demo();
+#endif
 	// static policy api
 	// scaner main charge
 	// policy Provided infomation

@@ -24,7 +24,7 @@ void func_accept(listenor_ptr ptr, connection_ptr connection_, const boost::syst
 
 
 
-std::string system_api::run( bool bReset )
+std::string system_api::run( boost::function<void (bool)> func_init_finished, bool bReset )
 {
 	std::string err_string;
 	size_t n = 0;
@@ -52,17 +52,22 @@ std::string system_api::run( bool bReset )
 
 		try
 		{
-			
+			// start policy server
+			//...
+			if ( false == policy_server_point->init() )
+				return system_log::err_ret(system_log::system_err(5));
+
 			// start task pool
 			//...
 			if ( thread_pool_point->start( 5 * 30 ) == false )
-				return system_log::err_ret(system_log::system_err(5));
-			// start interaction server
-			//...
+				return system_log::err_ret(system_log::system_err(6));
 
+			// start control server
+			//...
 			auto lis = iocp_server_point->create_listen("0.0.0.0","18080");
 			iocp_server_point->start_accept( lis,func_accept, lis  );
 
+			func_init_finished(true);
 			// start base io
 			iocp_server_point->run();
 		}
@@ -70,6 +75,7 @@ std::string system_api::run( bool bReset )
 		{
 			err_string = e.what();
 			High_log( "System run exception: %s\n", err_string );
+			func_init_finished(false);
 		}
 		// stop interaction server
 
@@ -78,6 +84,9 @@ std::string system_api::run( bool bReset )
 
 		// stop io
 		iocp_server_point->stop();
+
+		// clear policy
+		policy_server_point->clear();
 
 		High_log( "System stop No.%d \n", ++n );
 

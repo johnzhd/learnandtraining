@@ -4,10 +4,13 @@
 #include <sstream>
 #include <boost/format.hpp>
 
+#include "file_base_tools.h"
+
 namespace system_log
 {
 	enum log_type
 	{
+		Silence = -1,
 		High_Err = 0,
 		Warning,
 		Function,

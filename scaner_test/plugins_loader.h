@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <set>
 #include <boost/shared_ptr.hpp>
 // As dll\so export
 
@@ -23,7 +23,7 @@ namespace plugins_loader
 
 	public:
 		// html parser
-		size_t html_parser(const char* body, std::vector<std::string>& v_out);
+		size_t html_parser(const char* body, std::set<std::string>& v_out, std::string domain);
 	};
 
 	

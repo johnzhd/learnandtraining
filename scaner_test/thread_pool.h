@@ -13,6 +13,9 @@
 #include <boost/thread/locks.hpp>
 #include <boost/thread/condition.hpp>
 
+#include <boost/thread/shared_mutex.hpp>
+#include <boost/thread/shared_lock_guard.hpp>
+
 
 #include <atomic> 
 
@@ -42,13 +45,16 @@ protected:
 	thread_work_queue work_queue_content;
 	//thread
 	typedef boost::shared_ptr<boost::thread> thread_ptr;
+	//boost::thread_group 
 	std::vector<thread_ptr> work_queue_thread; // save thread ptr to interrupt, when stop()
 	boost::mutex thread_queue_mutex; // for queue safe
+#define LOCKER_T boost::mutex::scoped_lock locker(thread_queue_mutex)
+
+
 	boost::mutex thread_action_mutex; // for action
 	boost::condition thread_wait_condition; // wait action signel
 
-#define LOCKER_T boost::mutex::scoped_lock locker(thread_queue_mutex)
-#define SET_WAIT(xxx) boost::mutex::scoped_lock xxx(thread_action_mutex)
+
 
 public:
 	bool start( size_t total );

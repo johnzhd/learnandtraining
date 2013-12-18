@@ -13,7 +13,7 @@ namespace charset
 
 
 	bool any_to_unicode( std::string charset_http, std::vector<unsigned char>& in, size_t count_in, std::vector<wchar_t>& out, size_t& count_out );
-	bool any_to_unicode( std::string charset_http, std::vector<unsigned char>& in, size_t count_in, std::wstring out);
+	bool any_to_unicode( std::string charset_http, std::vector<unsigned char>& in, size_t count_in, std::wstring& out);
 
 	std::string to_acsII( std::wstring wstr );
 	std::string to_acsII( std::vector<wchar_t>& wstr );

@@ -176,5 +176,8 @@
     <ClCompile Include="plugins_loader.cpp">
       <Filter>system</Filter>
     </ClCompile>
+    <ClCompile Include="test_signal2.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include <atomic>
 #include <vector>
 #include <map>
+#include <set>
 #include <list>
 #include <string>
 
@@ -60,9 +61,6 @@ public:
 
 public:
 	static std::string make_union_id( std::string url );
-	static std::string format_url(std::string url);
-	static std::string format_head(std::string head);
-	static std::string format_trigger(std::string trigger);
 
 };
 
@@ -146,6 +144,8 @@ protected:
 
 	std::atomic_size_t next_work_no;
 
+	std::atomic_size_t finished_no;
+
 public:
 	task_start_struct_ptr start_ptr;
 	task_err_page_ptr err_page_ptr;
@@ -159,6 +159,7 @@ public:
 	boost::mutex url_mutex;
 	boost::mutex result_mutex;
 
+
 public:
 	std::string get_task_union_id();
 
@@ -166,18 +167,20 @@ public:
 
 	bool insert_new_url( std::string url );
 	bool insert_new_url( task_url_struct_ptr url );
-	bool insert_new_url( std::vector<std::string> url_list );
+	bool insert_new_url( std::set<std::string>& url_list );
 
 	bool fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr );
 	void finished_one_url( task_url_struct_ptr url_ptr );
 	void finished_one_url( size_t url_no );
 
 	bool is_url_empty(); // is url_list content nothing new;
-
+	int url_list_remain();
 
 	bool get_one_url( size_t url_no, task_url_struct_ptr& url_ptr );
 
 	bool insert_result( size_t url_no, task_result_struct_ptr result_ptr );
+
+	void test_task_finished_quit();
 };
 
 typedef boost::shared_ptr<task_map> task_map_ptr;
