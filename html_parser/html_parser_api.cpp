@@ -87,6 +87,7 @@ static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::
 	for (unsigned int i = 0; i < children->length; ++i) {
 		search_for_links(static_cast<GumboNode*>(children->data[i]),v_out, page_url);
 	}
+
 };
 
 size_t API_html_parser(const char* body, std::set<std::string>& v_out, std::string str_domain)

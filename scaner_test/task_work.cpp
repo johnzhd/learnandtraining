@@ -65,6 +65,7 @@ namespace task_work
 		{
 			return system_log::err_ret( system_log::op_err(1) );
 		}
+		Function_log("[%s] Check main url %s.\n", __FUNCTION__, url );
 		Noise_log("[%s](%d) %s\n", __FUNCTION__, __LINE__, "Call http::download_one main.");
 		// download main page
 		std::vector<unsigned char> send_raw,recv_raw;
@@ -130,6 +131,8 @@ namespace task_work
 		{
 			return system_log::err_ret( system_log::op_err(5) );
 		}
+
+		Function_log("[%s] Start task %s.\n", __FUNCTION__, map_ptr->get_task_union_id() );
 		return system_log::success_ret();
 	}
 
@@ -141,35 +144,26 @@ namespace task_work
 		//Empty list return
 		if ( false == map_ptr->fresh_one_url(url_no,url_point) )
 			return ;
-		
-		int n = map_ptr->url_list_remain();
-		if ( n > 30 )
-			n = 30;
-
-		while ( n-- > 0 )
-		{
-			push_into_thread_pool(boost::bind(task_work::pull_and_download_url,map_ptr));
-		};
 
 		do
 		{
 			url_point->first_send.clear();
-			Function_log("[%s](%d) Download %s\n", __FUNCTION__, __LINE__, url_point->url_origin.c_str() );
+			Function_log("[%s] %d Download.\n", __FUNCTION__, url_no );
 			if ( false == http::download_one(url_point->b_post, url_point->url_origin, map_ptr->start_ptr->running_head,
 				url_point->first_send, url_point->first_recv) )
 			{
-				Noise_log( "%s %s %s \n", __FILE__, __LINE__, "start download failed." );
+				Noise_log( "[%s] %d download failed. \n", __FUNCTION__, url_no );
 				break; //trick for return
 			};
 			std::vector<http_tools::http_info> v_list;
-			Noise_log("[%s](%d) Unzip %s\n", __FUNCTION__, __LINE__, url_point->url_origin.c_str() );
+			Noise_log("[%s] %d Unzip\n", __FUNCTION__, url_no );
 			if ( false == http_tools::http_reponse_completed(url_point->first_recv, v_list, url_point->running_trigger) )
 			{
-				Noise_log( "%s %s %s \n", __FILE__, __LINE__, "download failed. unable to analyse http protocal." );
+				Noise_log( "[%s] %d unzip failed. \n", __FUNCTION__, url_no );
 				break; //trick for return
 			};
 
-			Noise_log("[%s](%d) Crawl %s\n", __FUNCTION__, __LINE__, url_point->url_origin.c_str() );
+			Noise_log("[%s] %d Crawl.\n", __FUNCTION__, url_no );
 			std::set<std::string> url_list;
 			url_point->translate_body = L"";
 			// for debug
@@ -183,14 +177,9 @@ namespace task_work
 					map_ptr->insert_new_url( url_list );
 				}
 
-				if ( false == map_ptr->is_url_empty() )
-				{
-					push_into_thread_pool(boost::bind(task_work::pull_and_download_url,map_ptr));
-				};
-
 				url_point->translate_body += http_package.translate_wstr_body;
 			};
-
+			Noise_log("[%s] %d Crawl done.\n", __FUNCTION__, url_no );
 			policy_api::policy_server_ptr policy_point;
 			policy_point = policy_api::get_server();
 			if ( policy_point == nullptr )
@@ -199,24 +188,42 @@ namespace task_work
 				break; //trick for return
 			}
 			
+#if 0
 			std::vector<policy_api::policy_work_ptr> policy_list;
 			if ( false == policy_point->get_policys( url_point->running_trigger,policy_list) || policy_list.empty() )
 			{
 				Noise_log( "%s %s %s %s \n", __FILE__, __LINE__, "get policy failed. No triggered policy.", url_point->running_trigger );
 				break; //trick for return
 			}
+#else
+			std::vector<std::string> policy_list;
+			if ( false == policy_point->get_policys( url_point->running_trigger,policy_list) || policy_list.empty() )
+			{
+				Noise_log( "%s %s %s %s \n", __FILE__, __LINE__, "get policy failed. No triggered policy.", url_point->running_trigger );
+				break; //trick for return
+			}
+#endif
 
-			Noise_log("[%s](%d) Start policy(%d) %s\n", __FUNCTION__, __LINE__, policy_list.size(), url_point->url_origin.c_str() );
+			Noise_log("[%s] %d Start policy(%d).\n", __FUNCTION__, url_no, policy_list.size() );
 			url_point->running_thread = policy_list.size() + 1; // 1 : download & crawl( this thread already done) + size() : policy need
 
 			for( auto ptr : policy_list )
 			{
-				push_into_thread_pool(boost::bind(task_work::run_policy, map_ptr, url_no, ptr) );
+				push_into_thread_pool(boost::bind(task_work::run_policy_name, map_ptr, url_no, ptr) );
 			};
 		}
 		while ( url_no != url_no );  //trick for return // to fool warning as error check
 
-		map_ptr->finished_one_url(url_point);		
+		Function_log("[%s] finished %d\n", __FUNCTION__, url_no );
+
+		map_ptr->finished_one_url(url_point);
+
+		int n = map_ptr->url_list_remain();
+
+		while ( n-- > 0 )
+		{
+			push_into_thread_pool(boost::bind(task_work::pull_and_download_url,map_ptr));
+		};
 	};
 
 
@@ -277,6 +284,43 @@ namespace task_work
 		//else
 		//run_xxxx;
 
+	}
+
+	void run_policy_name(task_data::task_map_ptr map_ptr, size_t url_no, std::string policy_name)
+	{
+		task_data::task_url_struct_ptr url_ptr;
+		policy_api::policy_base_ptr policy_ptr;
+		std::vector<std::string> in, out;
+		if ( false == map_ptr->get_one_url(url_no,url_ptr) )
+			return ;
+
+		if ( nullptr == policy_api::get_server() || nullptr == (policy_ptr=policy_api::get_server()->get_policy_TEST(policy_name)) )
+		{
+			map_ptr->finished_one_url(url_no);
+			return ;
+		};
+		//Noise_log("[%s](%d) Policy %s | %s\n", __FUNCTION__, __LINE__, policy_ptr->name() , url_ptr->url_origin.c_str() );
+
+		out.resize(3,"");
+		in.resize(3,"");
+		in[0] = url_ptr->url_origin;
+		in[1].assign(url_ptr->first_recv.begin(),url_ptr->first_recv.end());
+		in[2] = charset::to_acsII(url_ptr->translate_body);
+		if ( true == policy_ptr->call_function( out, "Init_Lua", in ) )
+		{
+			/*if ( find vul )
+			{
+			task_data::task_result_struct_ptr ptr(new task_data::task_result_struct(out[0],policy_ptr->get_vul_id(),out[1],out[2],false));
+			map_ptr->insert_result( url_no,ptr);
+			}*/
+		}
+		// if ( policy finished )
+		
+		map_ptr->finished_one_url(url_no);
+		// to be continue here
+		//else
+		//run_xxxx;
+		policy_api::get_server()->delete_copy_TEST(policy_ptr);
 	}
 
 

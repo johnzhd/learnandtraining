@@ -4,7 +4,6 @@
 #include "stdafx.h"
 
 
-#include "globle_api.h"
 
 #include <boost/thread.hpp>
 

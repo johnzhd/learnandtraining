@@ -108,6 +108,9 @@
     <ClInclude Include="plugins_loader.h">
       <Filter>system</Filter>
     </ClInclude>
+    <ClInclude Include="hash.hpp">
+      <Filter>system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

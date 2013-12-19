@@ -22,6 +22,9 @@ extern "C" {
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/noncopyable.hpp>
 
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/locks.hpp>
+
 #define POLICY_STR_GET_APP_PATH	file_base_tools::get_app_path()
 
 #define POLICY_STR_MAIN_FILE ("main.lua")
@@ -64,15 +67,18 @@ public:
 	~policy_base();
 public:
 	lua_State*& point();
+	std::string name();
 	bool load(const char * filePathName);
 	bool empty() const;
 	void clear();
 protected:
 	lua_State *lu_ptr;
+	boost::mutex lua_mutex;
 public:
 	std::string m_version;
 	std::string m_vul_union_id;
 	std::string m_triggle;
+	std::string m_name;
 
 public:
 	enum init_environment_type
@@ -81,6 +87,8 @@ public:
 		INIT_WORK,
 	};
 	bool init_environment(init_environment_type type = INIT_WORK);
+
+	lua_State * copy();
 
 	bool call_function( std::vector<std::string>& v_out, const char * name, const std::vector<std::string>& v_in );
 protected:
@@ -115,13 +123,13 @@ public:
 	// action policy api
 	// policy main charge
 	// scaner provided functions
-	std::string get_vul_id();
 public:
 
 	//base
 protected:
 	lua_State *lu_ptr;
 	std::string str_name;
+	boost::mutex lua_mutex;
 };
 
 
@@ -151,9 +159,17 @@ public:
 	size_t get_policy_count() const;
 
 	bool get_policys( std::string trigger, std::vector<policy_work_ptr>& policy_list) const;
+	bool get_policys( std::string trigger, std::vector<std::string>& policy_list) const;
 public:
 	policy_work_ptr create_copy(policy_base_ptr base,std::string name) const;
 	void delete_copy(policy_work& sub) const;
+
+
+public:
+	//for test
+	policy_base_ptr get_policy_TEST( std::string name ) const;
+	void delete_copy_TEST(policy_base_ptr& sub) const;
+
 };
 
 

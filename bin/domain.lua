@@ -5,7 +5,8 @@ GLOBLE_TRIGGER_TYPE = "ONCE||URL=JSP||"
 
 function Init_Lua( url, request, reponse )
 -- do something
-print("domain.lua %s [%d] (%d)\n", url, strlen(request), strlen(reponse) );
+
+print(string.format("domain.lua %s [%d] (%d)\n", url, string.len(request), string.len(reponse)));
 return "", "", "";
 end
 

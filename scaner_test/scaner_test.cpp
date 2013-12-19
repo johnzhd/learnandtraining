@@ -30,6 +30,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	if ( argc < 2 )
 	{
 		printf( " No scan main url info. \n>scaner_test http://www.rising.com.cn\n" );
+		system("pause");
 		return 0;
 	};
 	start_task = argv[1];
@@ -41,7 +42,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	Noise_log("[%s](%d) system_api::run return %s\n", __FUNCTION__, __LINE__, str);
 
-
+	system("pause");
 	return 0;
 }
 

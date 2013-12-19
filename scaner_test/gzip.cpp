@@ -20,7 +20,7 @@ bool ungzip(std::vector<unsigned char>& in, size_t count_in, std::vector<unsigne
 	out.resize( count_in * 10,0 );
 	uncompr = reinterpret_cast<char*>(&out[0]);
 	uncomprLen = out.size();
-
+	memset(&d_stream,0,sizeof(z_stream));
 	d_stream.zalloc = Z_NULL;
 	d_stream.zfree = Z_NULL;
 	d_stream.opaque = Z_NULL;

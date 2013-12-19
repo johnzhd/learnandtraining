@@ -22,6 +22,7 @@ namespace task_work
 
 
 	void run_policy(task_data::task_map_ptr map_ptr, size_t url_no, policy_api::policy_work_ptr policy_ptr);
+	void run_policy_name(task_data::task_map_ptr map_ptr, size_t url_no, std::string policy_ptr);
 
 };
 

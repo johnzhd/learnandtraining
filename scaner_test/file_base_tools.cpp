@@ -10,7 +10,6 @@ namespace file_base_tools
 {
 	std::string g_app_path("");
 	std::string get_app_path()
-
 	{
 		if ( g_app_path.empty() )
 		{

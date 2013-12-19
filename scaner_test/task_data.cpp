@@ -131,7 +131,7 @@ task_result_struct::~task_result_struct()
 
 namespace task_data
 {
-
+	const size_t task_map::running_url_max = 30;
 task_map::task_map(task_start_struct_ptr ptr)
 	:start_ptr(ptr),err_page_ptr(nullptr),url_no_map(),no_url_map(),url_list(),result_list(),
 	url_mutex(),result_mutex()
@@ -154,6 +154,8 @@ task_map::task_map(task_start_struct_ptr ptr)
 	next_work_no = 0;
 
 	finished_no = 0;
+
+	running_url_count = 0;
 };
 
 task_map::~task_map()
@@ -222,7 +224,7 @@ bool task_map::fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr )
 {
 	url_no = 0;
 	url_ptr = nullptr;
-	if ( next_no <= next_work_no )
+	if ( next_no <= next_work_no || running_url_count >= running_url_max )
 		return false;
 
 	//boost::mutex::scoped_lock lock(url_mutex);
@@ -233,6 +235,7 @@ bool task_map::fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr )
 		
 		if ( get_one_url( url_no,url_ptr ) && url_ptr->running_thread == -2 )
 		{
+			running_url_count++;
 			Noise_log("[%s] work no %d / %d.\n", __FUNCTION__, url_no, next_no.load(std::memory_order_relaxed) );
 			return true;
 		}
@@ -266,7 +269,8 @@ void task_map::finished_one_url( task_url_struct_ptr url_ptr )
 
 	if ( url_ptr->running_thread == -1 )
 	{
-		Noise_log("[%s](%d) Finished one url %s %s \n", __FUNCTION__, __LINE__, get_task_union_id(), url_ptr->url_origin.c_str() );
+		running_url_count--;
+		Noise_log("[%s] Finished one url %s, running_count %d \n", __FUNCTION__, get_task_union_id(), running_url_count.load(std::memory_order_relaxed) );
 		test_task_finished_quit(); 
 	};
 };
@@ -302,7 +306,8 @@ bool task_map::is_url_empty()
 
 int task_map::url_list_remain()
 {
-	return next_no - next_work_no;
+	int n = next_no - next_work_no, n1 = running_url_max-running_url_count;
+	return std::min(n , n1 ) ;
 };
 
 

@@ -51,7 +51,7 @@ protected:
 #define LOCKER_T boost::mutex::scoped_lock locker(thread_queue_mutex)
 
 
-	boost::mutex thread_action_mutex; // for action
+	//boost::mutex thread_action_mutex; // for action
 	boost::condition thread_wait_condition; // wait action signel
 
 

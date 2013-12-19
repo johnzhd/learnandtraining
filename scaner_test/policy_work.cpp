@@ -193,7 +193,7 @@ bool policy_base_server::init()
 		// check file list
 		size_t n;
 		n = base_map.size();
-		std::vector<decltype(base_map.begin())> eraser_v;
+		std::vector<std::string> eraser_v;
 		// loop load plugins
 		for( auto it = base_map.begin(); it != base_map.end(); it++ )
 		{
@@ -201,7 +201,7 @@ bool policy_base_server::init()
 			if ( false == it->second->load(it->first.c_str()) )
 			{
 				it->second = nullptr;
-				eraser_v.push_back(it);
+				eraser_v.push_back(it->first);
 				// Log load policy it->first; failed
 				// Log it->second->get_string_globle(POLICY_STR_UNION_ID); failed
 				continue;
@@ -210,7 +210,7 @@ bool policy_base_server::init()
 			if ( false == it->second->init_environment() )
 			{
 				it->second = nullptr;
-				eraser_v.push_back(it);
+				eraser_v.push_back(it->first);
 				continue;
 			}
 
@@ -259,11 +259,10 @@ void policy_base_server::free_policy( policy_work_ptr ptr )
 policy_work_ptr policy_base_server::get_policy( std::string name ) const
 {
 	auto it = base_map.find(name);
-	if ( it == base_map.end() )
+	if ( it == base_map.end() || nullptr == it->second )
 		return nullptr;
-	if ( it->second )
-		return create_copy(it->second, it->first);
-	return nullptr;
+
+	return create_copy(it->second, it->first);
 }
 
 policy_work_ptr policy_base_server::get_policy( size_t no ) const
@@ -322,6 +321,43 @@ bool policy_base_server::get_policys( std::string trigger, std::vector<policy_wo
 	return false == policy_list.empty();
 };
 
+bool policy_base_server::get_policys( std::string trigger, std::vector<std::string>& policy_list) const
+{
+	if ( base_map.empty() )
+		return false;
+	
+	policy_work_ptr ptr = nullptr;
+	policy_list.clear();
+	policy_list.reserve( base_map.size());
+
+	if ( trigger.empty() )
+	{
+		for( auto & policy: base_map )
+		{
+			if ( policy.second == nullptr && policy.first.empty() )
+				continue;
+
+			policy_list.push_back(policy.first);
+		};
+	}
+	else
+	{
+		trigger_base tr(trigger);
+		for( auto & policy: base_map )
+		{
+			if ( policy.second == nullptr && policy.first.empty()  )
+				continue;
+
+			if ( false == tr.hit_trigger( policy.second->m_triggle ) )
+				continue;
+
+			policy_list.push_back(policy.first);
+		};
+	}
+
+	return false == policy_list.empty();
+};
+
 
 
 
@@ -340,13 +376,16 @@ policy_work_ptr policy_base_server::create_copy(policy_base_ptr base, std::strin
 {
 	if ( base->empty() )
 		return nullptr;
-	lua_State* lu = lua_newthread(base->point());
-	if ( lu == NULL )
+
+	
+	lua_State* lu = base->copy();
+	if ( lu == nullptr )
 	{
 		return nullptr;
 	}
 	return policy_work_ptr( new policy_work(lu, name) );
 };
+
 
 void policy_base_server::delete_copy(policy_work& sub) const
 {
@@ -362,7 +401,8 @@ policy_base::policy_base()
 	:lu_ptr(NULL),
 	m_version(""),
 	m_vul_union_id(""),
-	m_triggle("")
+	m_triggle(""),
+	lua_mutex()
 {
 };
 
@@ -378,23 +418,26 @@ lua_State*& policy_base::point()
 bool policy_base::load(const char * filePathName)
 {
 	clear();
-	lu_ptr = luaL_newstate();
-	if ( lu_ptr == NULL )
-		return false;
-	luaL_openlibs(lu_ptr);
-
-	// policy
-	if ( LUA_OK != luaL_dofile(lu_ptr, filePathName) )
 	{
-		clear();
-		return false;
-	}
+		boost::mutex::scoped_lock lock(lua_mutex);
+		lu_ptr = luaL_newstate();
+		if ( lu_ptr == NULL )
+			return false;
+		luaL_openlibs(lu_ptr);
 
+		// policy
+		if ( LUA_OK != luaL_dofile(lu_ptr, filePathName) )
+		{
+			clear();
+			return false;
+		}
+	}
 	if ( false == get_globle_value() )
 	{
 		clear();
 		return false;
 	}
+	m_name = filePathName;
 	return true;
 };
 
@@ -405,16 +448,27 @@ bool policy_base::empty() const
 
 void policy_base::clear()
 {
+	
 	m_version.clear();
 	m_vul_union_id.clear();
 	m_triggle.clear();
+	
 	if ( NULL != lu_ptr )
 	{
+		boost::mutex::scoped_lock lock(lua_mutex);
 		lua_close( lu_ptr );
 		lu_ptr = NULL;
 	};
 };
-
+std::string policy_base::name()
+{
+	return m_name;
+}
+lua_State * policy_base::copy()
+{
+	boost::mutex::scoped_lock lock(lua_mutex);
+	return lua_newthread(point());
+};
 
 
 bool policy_base::init_environment(init_environment_type type)
@@ -456,6 +510,8 @@ bool policy_base::get_globle_value()
 
 std::string policy_base::get_string_globle(const char* name)
 {
+	
+	boost::mutex::scoped_lock lock(lua_mutex);
 	const char * p = NULL;
 	lua_getglobal(lu_ptr, name);
 	p = lua_tostring(lu_ptr, -1);
@@ -466,6 +522,8 @@ std::string policy_base::get_string_globle(const char* name)
 
 int policy_base::get_int_globle(const char* name)
 {
+	
+	boost::mutex::scoped_lock lock(lua_mutex);
 	int n = 0;
 	lua_getglobal(lu_ptr, name);
 	n = lua_tointeger(lu_ptr, -1);
@@ -478,6 +536,7 @@ inline bool policy_base::set_function_globle( const char* name, lua_CFunction fu
 {
 	if ( nullptr == name || *name == '\0' || func == nullptr )
 		return false;
+	boost::mutex::scoped_lock lock(lua_mutex);
 	lua_pushcfunction(lu_ptr, func);  
 	lua_setglobal(lu_ptr, name);
 	return true;
@@ -489,7 +548,7 @@ bool policy_base::call_function( std::vector<std::string>& v_out, const char * n
 	bool b;
 	int nret;
 	const char * p;
-
+	boost::mutex::scoped_lock lock(lua_mutex);
 	lua_getglobal(lu_ptr, name);
 	for ( size_t i = 0 ; i < v_in.size() ; i++ )
 		lua_pushstring(lu_ptr, v_in[i].c_str());
@@ -497,12 +556,14 @@ bool policy_base::call_function( std::vector<std::string>& v_out, const char * n
 	b = (LUA_OK == lua_pcall(lu_ptr, v_in.size(),v_out.size(),0));
 	nret = lua_gettop(lu_ptr);
 	nret = std::min(nret, static_cast<int>(v_out.size()));
+	assert(nret == 3 );
 	for( int i = 0; i < nret; i++ )
 	{
 		p = lua_tostring(lu_ptr,i+1);
 		v_out[i] = p?p:"";
 	}
 	lua_pop(lu_ptr, nret);
+
 	return b;
 }
 
@@ -512,13 +573,15 @@ bool policy_base::call_function( std::vector<std::string>& v_out, const char * n
 
 policy_work::policy_work(lua_State * lu, std::string str)
 	:lu_ptr(lu),
-	str_name(str)
+	str_name(str),
+	lua_mutex()
 {
 }
 
 
 policy_work::~policy_work(void)
 {
+	clear();
 }
 
 lua_State*& policy_work::point()
@@ -545,13 +608,15 @@ bool policy_work::call_function( std::vector<std::string>& v_out, const char * n
 	bool b;
 	int nret;
 	const char * p;
-
+	boost::mutex::scoped_lock lock(lua_mutex);
 	lua_getglobal(lu_ptr, name);
 	for ( size_t i = 0 ; i < v_in.size() ; i++ )
 		lua_pushstring(lu_ptr, v_in[i].c_str());
 
 	b = (LUA_OK == lua_pcall(lu_ptr, v_in.size(),v_out.size(),0));
 	nret = lua_gettop(lu_ptr);
+	nret = std::min(nret, static_cast<int>(v_out.size()));
+	assert(nret == 3 );
 	for( int i = 0; i < nret; i++ )
 	{
 		p = lua_tostring(lu_ptr,i+1);
@@ -560,6 +625,7 @@ bool policy_work::call_function( std::vector<std::string>& v_out, const char * n
 	lua_pop(lu_ptr, nret);
 	return b;
 }
+
 #ifdef _DEBUG
 bool policy_work::run_demo()
 {
@@ -588,7 +654,27 @@ bool policy_work::run_demo()
 
 
 
+policy_base_ptr policy_base_server::get_policy_TEST( std::string name ) const
+{
+	policy_base_ptr ptr(new policy_base());
+	if ( ptr == nullptr )
+		return nullptr;
 
+	if ( false == ptr->load(name.c_str()) )
+		return nullptr;
+
+	if ( false == ptr->init_environment() )
+		return nullptr;
+
+	return ptr;
+}
+void policy_base_server::delete_copy_TEST(policy_base_ptr& ptr) const
+{
+	if ( ptr == nullptr )
+		return;
+
+	ptr->clear();
+}
 
 
 

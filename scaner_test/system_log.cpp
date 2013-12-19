@@ -47,6 +47,8 @@ namespace system_log
 		{
 			boost::mutex::scoped_lock locker(keeper_mutex);
 			log_keeper.push_back(str);
+			if ( log_keeper.size() > 50000 )
+				log_keeper.clear();
 		};
 		inline void show_text( std::string& str )
 		{

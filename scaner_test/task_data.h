@@ -146,6 +146,10 @@ protected:
 
 	std::atomic_size_t finished_no;
 
+	std::atomic_size_t running_url_count;
+
+	static const size_t running_url_max;
+
 public:
 	task_start_struct_ptr start_ptr;
 	task_err_page_ptr err_page_ptr;
