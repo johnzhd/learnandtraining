@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "file_base_tools.h"
 
+#include <iostream>
+#include <fstream>
+
 #ifdef _MSC_VER
 #include <Windows.h>
 #else
@@ -29,4 +32,39 @@ namespace file_base_tools
 		}
 		return g_app_path;
 	}
+
+
+	bool load_file( const char * file_name, std::vector<char>& file_buff )
+	{
+		std::ifstream f( file_name, std::ios::_Nocreate | std::ios::binary );
+
+		std::filebuf *ptr;
+
+		if ( false == f.is_open() )
+			return false;
+
+		ptr = f.rdbuf();
+		if ( ptr == nullptr )
+		{
+			f.close();
+			return false;
+		}
+
+
+		std::streamoff size = ptr->pubseekoff(0, std::ios::end, std::ios::in);
+		if ( size <= 0 )
+		{
+			f.close();
+			return false;
+		};
+
+		ptr->pubseekpos(0,std::ios::in);
+
+		file_buff.resize(static_cast<size_t>(size),0);
+		ptr->sgetn(&file_buff[0],size);
+
+		f.close();
+
+		return true;
+	};
 }

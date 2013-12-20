@@ -156,14 +156,12 @@ namespace task_work
 				break; //trick for return
 			};
 			std::vector<http_tools::http_info> v_list;
-			Noise_log("[%s] %d Unzip\n", __FUNCTION__, url_no );
 			if ( false == http_tools::http_reponse_completed(url_point->first_recv, v_list, url_point->running_trigger) )
 			{
 				Noise_log( "[%s] %d unzip failed. \n", __FUNCTION__, url_no );
 				break; //trick for return
 			};
 
-			Noise_log("[%s] %d Crawl.\n", __FUNCTION__, url_no );
 			std::set<std::string> url_list;
 			url_point->translate_body = L"";
 			// for debug
@@ -179,7 +177,7 @@ namespace task_work
 
 				url_point->translate_body += http_package.translate_wstr_body;
 			};
-			Noise_log("[%s] %d Crawl done.\n", __FUNCTION__, url_no );
+
 			policy_api::policy_server_ptr policy_point;
 			policy_point = policy_api::get_server();
 			if ( policy_point == nullptr )
@@ -236,6 +234,7 @@ namespace task_work
 	{
 		return crawl_page(charset::to_acsII(body),url_list,page_url);
 	};
+
 	size_t crawl_page( const std::string& body, std::set<std::string>* url_list, const std::string& page_url )
 	{
 		size_t n = 0;
@@ -289,12 +288,12 @@ namespace task_work
 	void run_policy_name(task_data::task_map_ptr map_ptr, size_t url_no, std::string policy_name)
 	{
 		task_data::task_url_struct_ptr url_ptr;
-		policy_api::policy_base_ptr policy_ptr;
+		policy_api::policy_work_ptr policy_ptr;
 		std::vector<std::string> in, out;
 		if ( false == map_ptr->get_one_url(url_no,url_ptr) )
 			return ;
 
-		if ( nullptr == policy_api::get_server() || nullptr == (policy_ptr=policy_api::get_server()->get_policy_TEST(policy_name)) )
+		if ( nullptr == policy_api::get_server() || nullptr == (policy_ptr=policy_api::get_server()->clone_policy(policy_name)) )
 		{
 			map_ptr->finished_one_url(url_no);
 			return ;
@@ -320,7 +319,7 @@ namespace task_work
 		// to be continue here
 		//else
 		//run_xxxx;
-		policy_api::get_server()->delete_copy_TEST(policy_ptr);
+		policy_api::get_server()->free_policy(policy_ptr);
 	}
 
 

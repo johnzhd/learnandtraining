@@ -61,7 +61,7 @@ namespace plugins_loader
 #endif
 	};
 
-	typedef size_t (*func_html_parser_run)(const char* body, std::set<std::string>& v_out, std::string domain);
+	typedef size_t (*func_html_parser_run)(const std::string& body, std::set<std::string>& v_out, std::string page_url);
 	func_html_parser_run call_func_html_parser_run = nullptr;
 	inline static bool init_html_parser()
 	{
@@ -78,7 +78,12 @@ namespace plugins_loader
 		vh_plugins.push_back(h_temp);
 		return true;
 	}
-
+	size_t plugins_server::html_parser(const std::string& body, std::set<std::string>& v_out, std::string page_url)
+	{
+		if ( call_func_html_parser_run )
+			return call_func_html_parser_run(body,v_out,page_url);
+		return 0;
+	}
 
 
 
@@ -94,7 +99,6 @@ namespace plugins_loader
 
 	bool plugins_server::init()
 	{
-
 		// load html parser
 		if( false == init_html_parser() )
 		{
@@ -116,12 +120,7 @@ namespace plugins_loader
 	};
 
 
-	size_t plugins_server::html_parser(const char* body, std::set<std::string>& v_out, std::string domain)
-	{
-		if ( call_func_html_parser_run )
-			return call_func_html_parser_run(body,v_out,domain);
-		return 0;
-	}
+	
 
 
 

@@ -40,6 +40,9 @@
     <Filter Include="log">
       <UniqueIdentifier>{d71c76d5-cd15-4084-b1ce-a108dd164b27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="policy">
+      <UniqueIdentifier>{d3ba8b73-8b39-4d1c-9a04-ac9e7bf4d3e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -84,9 +87,6 @@
     <ClInclude Include="task_work.h">
       <Filter>task</Filter>
     </ClInclude>
-    <ClInclude Include="policy_work.h">
-      <Filter>task</Filter>
-    </ClInclude>
     <ClInclude Include="task_data.h">
       <Filter>task</Filter>
     </ClInclude>
@@ -110,6 +110,12 @@
     </ClInclude>
     <ClInclude Include="hash.hpp">
       <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="policy_work.h">
+      <Filter>policy</Filter>
+    </ClInclude>
+    <ClInclude Include="policy_base.h">
+      <Filter>policy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +158,6 @@
     <ClCompile Include="task_work.cpp">
       <Filter>task</Filter>
     </ClCompile>
-    <ClCompile Include="policy_work.cpp">
-      <Filter>task</Filter>
-    </ClCompile>
     <ClCompile Include="task_data.cpp">
       <Filter>task</Filter>
     </ClCompile>
@@ -181,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="test_signal2.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="policy_work.cpp">
+      <Filter>policy</Filter>
+    </ClCompile>
+    <ClCompile Include="policy_base.cpp">
+      <Filter>policy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

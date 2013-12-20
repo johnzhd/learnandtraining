@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "html_parser_api.h"
 
+
+#include <regex>
 #include <algorithm>
 
 #include "gumbo.h"
@@ -42,9 +44,6 @@ inline bool match_domain( std::string domain_base, std::string domain2 )
 
 static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::string& page_url)
 {
-	if (root->type != GUMBO_NODE_ELEMENT) {
-		return ;
-	}
 	GumboAttribute* href;
 	switch ( root->v.element.tag )
 	{
@@ -84,18 +83,24 @@ static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::
 	{
 		return ;
 	}
-	for (unsigned int i = 0; i < children->length; ++i) {
+	for (unsigned int i = 0; i < children->length; ++i)
+	{
+		if ( static_cast<GumboNode*>(children->data[i])->type != GUMBO_NODE_ELEMENT )
+			continue;
 		search_for_links(static_cast<GumboNode*>(children->data[i]),v_out, page_url);
 	}
 
 };
 
-size_t API_html_parser(const char* body, std::set<std::string>& v_out, std::string str_domain)
+size_t API_html_parser(const std::string& body, std::set<std::string>& v_out, std::string str_domain)
 {
 	size_t s = v_out.size();
-	GumboOutput* output = gumbo_parse(body);
-	search_for_links(output->root,v_out,str_domain);
+	GumboOutput* output = gumbo_parse_with_options(&kGumboDefaultOptions, body.c_str(), body.length());
+	if (output->root->type != GUMBO_NODE_ELEMENT) {
+		search_for_links(output->root,v_out,str_domain);
+	}
 	gumbo_destroy_output(&kGumboDefaultOptions, output);
 
 	return v_out.size() - s;
 };
+

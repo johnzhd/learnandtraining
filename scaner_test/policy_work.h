@@ -3,8 +3,6 @@
 #pragma once
 
 
-
-
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
@@ -17,27 +15,12 @@ extern "C" {
 
 
 
-#include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/noncopyable.hpp>
 
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/locks.hpp>
+#include "policy_base.h"
 
-#define POLICY_STR_GET_APP_PATH	file_base_tools::get_app_path()
-
-#define POLICY_STR_MAIN_FILE ("main.lua")
-#define POLICY_STR_VERSION	("GLOBLE_VERSION")
-#define POLICY_STR_UNION_ID	("GLOBLE_UNIONID")
-#define POLICY_STR_TRIGGLE	("GLOBLE_TRIGGER_TYPE")
-
-
-#define GLOBLE_FUNC_NAME_INSERT_LOAD	("InsertNewPlugins")
-
-#define POLICY_STR_FUNCTION_FIRST_CALL	("Init_Lua")
-#define POLICY_INT_DEFAULT_IN_COUNT		(3)
-#define POLICY_INT_DEFAULT_OUT_COUNT	(3)
 
 namespace policy_api
 {
@@ -57,81 +40,11 @@ public:
 	static std::string format_trigger(std::string trigger);
 	static std::string format_trigger(std::string trigger, std::string add);
 };
-	
-class policy_base 
-	 : public boost::enable_shared_from_this<policy_base>,
-	 private boost::noncopyable
-{
-public:
-	policy_base();
-	~policy_base();
-public:
-	lua_State*& point();
-	std::string name();
-	bool load(const char * filePathName);
-	bool empty() const;
-	void clear();
-protected:
-	lua_State *lu_ptr;
-	boost::mutex lua_mutex;
-public:
-	std::string m_version;
-	std::string m_vul_union_id;
-	std::string m_triggle;
-	std::string m_name;
-
-public:
-	enum init_environment_type
-	{
-		INIT_WHOLE = 0,
-		INIT_WORK,
-	};
-	bool init_environment(init_environment_type type = INIT_WORK);
-
-	lua_State * copy();
-
-	bool call_function( std::vector<std::string>& v_out, const char * name, const std::vector<std::string>& v_in );
-protected:
-	bool get_globle_value();
-	inline std::string get_string_globle(const char* name);
-	inline int get_int_globle(const char* name);
-	inline bool set_function_globle( const char* name, lua_CFunction func);
 
 };
 
-
-class policy_work
+namespace policy_api
 {
-public:
-	policy_work(lua_State *lu, std::string name);
-	~policy_work(void);
-public:
-	lua_State*& point();
-	std::string name();
-	bool empty() const;
-	void clear();
-public:
-#ifdef _DEBUG
-	bool run_demo();
-#endif
-	// static policy api
-	// scaner main charge
-	// policy Provided infomation
-
-public:
-	bool call_function( std::vector<std::string>& v_out, const char * name, const std::vector<std::string>& v_in );
-	// action policy api
-	// policy main charge
-	// scaner provided functions
-public:
-
-	//base
-protected:
-	lua_State *lu_ptr;
-	std::string str_name;
-	boost::mutex lua_mutex;
-};
-
 
 typedef boost::shared_ptr<policy_base> policy_base_ptr;
 typedef boost::shared_ptr<policy_work> policy_work_ptr;
@@ -153,22 +66,16 @@ public:
 	bool init();
 	void clear();
 public:
-	void free_policy( policy_work_ptr ptr );
-	policy_work_ptr get_policy( std::string name ) const;
-	policy_work_ptr get_policy( size_t no ) const;
-	size_t get_policy_count() const;
+	size_t get_policy_count(std::string trigger = "") const;
 
-	bool get_policys( std::string trigger, std::vector<policy_work_ptr>& policy_list) const;
+	policy_work_ptr clone_policy( std::string name ) const;
+	policy_work_ptr clone_policy( size_t no ) const;
+
+
 	bool get_policys( std::string trigger, std::vector<std::string>& policy_list) const;
-public:
-	policy_work_ptr create_copy(policy_base_ptr base,std::string name) const;
-	void delete_copy(policy_work& sub) const;
 
-
-public:
-	//for test
-	policy_base_ptr get_policy_TEST( std::string name ) const;
-	void delete_copy_TEST(policy_base_ptr& sub) const;
+	
+	void free_policy( policy_work_ptr ptr );
 
 };
 

@@ -2,6 +2,7 @@
 #include "http_tools.hpp"
 
 #include <algorithm>
+#include <map>
 
 #include "gzip.h"
 #include "charset.h"
@@ -55,21 +56,12 @@ namespace http_tools
 			if ( head_.find( "Content-Type:" ) == std::string::npos )
 				str += "Content-Type: application/x-www-form-urlencoded\r\n";
 			// Content-type: multipart/form-data; boundary=------------TXFTNActiveX.Package.Partition.477953412.2660834128.30335057
-			str += "Content-Length: " + ConvertToString(params.length()) + "\r\n";
+			if ( head_.find( "Content-Length:" ) == std::string::npos )
+				str += "Content-Length: " + ConvertToString(params.length()) + "\r\n";
 		}
 
-		str += head_;
-		auto npos = str.find("\r\n\r\n");
-		while ( std::string::npos != npos )
-		{
-			str.erase( npos, 4 );
-			npos = str.find("\r\n\r\n");
-		};
-
-		if (str.substr(str.length() - 2, 2 ).compare("\r\n") == 0 )
-			str += "\r\n";
-		else
-			str += "\r\n\r\n";
+		str += head_ + "\r\n";
+		
 
 		if ( post )
 		{
@@ -518,4 +510,111 @@ namespace http_tools
 		return true;
 
 	};
+
+	static inline void trim( std::string& str )
+	{
+		str.erase(0,str.find_first_not_of("\r\n \t"));
+		str.erase(str.find_last_not_of("\r\n \t") + 1,std::string::npos);
+	};
+
+	static void cookie_2_map( std::string src, std::map<std::string,std::string>& map_out,
+		std::string start_line, std::string end_line )
+	{
+		std::string str_temp,str_key,str_value;
+
+		size_t nF,nB = 0, lf, lb,li;
+
+		while ( std::string::npos != (nF=src.find(start_line,nB+end_line.length())) )
+		{
+			nF += start_line.size();
+			nB = src.find(end_line,nF);
+			if ( nB == std::string::npos )
+				nB = src.length();
+
+			str_temp = src.substr(nF,nB-nF);
+
+			trim(str_temp);
+
+			if (str_temp.empty())
+				continue;
+
+			for ( lf = 0, lb = str_temp.find(";",lf) ; lf < str_temp.length() ; lf = lb + 1, lb = str_temp.find(";",lf) )
+			{
+				if ( lb == std::string::npos )
+				{
+					lb = str_temp.length();
+				};
+				li = str_temp.find("=");
+				if (li == std::string::npos)
+					continue;
+				str_key = str_temp.substr(lf,li-lf);
+				str_value = str_temp.substr( li+1, lb);
+
+				trim(str_key);
+				trim(str_value);
+				if ( str_key.empty() || str_value.empty() )
+					continue;
+
+				map_out[str_key] = str_value;
+			};
+		}
+	};
+
+	static void map_2_cookie(std::map<std::string,std::string>& map_in, std::string& cookie_out)
+	{
+		if ( map_in.empty() )
+			return ;
+		size_t nline = 0;
+		for ( auto it : map_in )
+		{
+			if ( 0 == nline )
+			{
+				cookie_out += "Cookie: " + it.first + "=" + it.second + ";";
+				nline = it.first.length() + it.second.length() + 10;
+			}
+			else if ( (nline + it.first.length() + it.second.length()) < 80 )
+			{
+				cookie_out += it.first + "=" + it.second + ";";
+
+				nline += it.first.length() + it.second.length() + 2;
+			}
+			else
+			{
+				cookie_out += "\r\nCookie: " + it.first + "=" + it.second + ";";
+				nline = it.first.length() + it.second.length() + 10;
+			}
+		};
+
+		cookie_out += "\r\n";
+	};
+	
+	void get_new_cookie( std::string recv_head, std::string old_cookie, std::string& new_cookie )
+	{
+		if ( recv_head.find("Set-Cookie:") == std::string::npos )
+		{
+			new_cookie = old_cookie;
+			return ;
+		}
+
+		std::map<std::string,std::string> map_temp;
+
+		cookie_2_map(old_cookie, map_temp, "Cookie:", "\n");
+
+		cookie_2_map(recv_head, map_temp, "Set-Cookie:", "\n");
+
+		std::vector<std::string> v_erase;
+		for (auto it : map_temp )
+		{
+			if ( it.second.empty() )
+				v_erase.push_back(it.first);
+		}
+
+		for (auto str : v_erase )
+		{
+			map_temp.erase( str );
+		};
+		new_cookie.clear();
+		map_2_cookie(map_temp, new_cookie);
+	};
+
 };

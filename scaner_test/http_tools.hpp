@@ -260,5 +260,7 @@ namespace http_tools
 
 	bool http_reponse_check( std::vector<unsigned char>& content );
 	bool http_reponse_completed( std::vector<unsigned char>& content, std::vector<http_info>& v_list, std::string& trigger );
+
+	void get_new_cookie( std::string recv_head, std::string old_cookie, std::string& new_cookie );
 };
 

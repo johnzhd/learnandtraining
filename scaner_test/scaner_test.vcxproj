@@ -108,6 +108,7 @@
     <ClInclude Include="hash.hpp" />
     <ClInclude Include="http_tools.hpp" />
     <ClInclude Include="plugins_loader.h" />
+    <ClInclude Include="policy_base.h" />
     <ClInclude Include="policy_work.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system.h" />
@@ -136,6 +137,7 @@
     <ClCompile Include="gzip.cpp" />
     <ClCompile Include="http_tools.cpp" />
     <ClCompile Include="plugins_loader.cpp" />
+    <ClCompile Include="policy_base.cpp" />
     <ClCompile Include="policy_work.cpp" />
     <ClCompile Include="scaner_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

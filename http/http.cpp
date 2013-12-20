@@ -10,10 +10,14 @@
 namespace http
 {
 
-bool download_one( bool post, const std::string& url, const std::string& head,
+bool download_one( bool post, std::string url, std::string head,
 				  std::vector<unsigned char>& send_raw, std::vector<unsigned char>& recv_raw )
 {
 	std::string domain,port;
+
+	url = http_tools::format_url(url);
+
+	head = http_tools::format_head(head);
 
 	domain = http_tools::get_domain(url);
 
@@ -35,7 +39,7 @@ bool download_one( bool post, const std::string& url, const std::string& head,
 		boost::shared_ptr<downloader<connection_ssl, unsigned char>> ptr_(new downloader<connection_ssl, unsigned char>() );
 		boost::function<void (std::vector<unsigned char>&)> func;
 		b = ptr_->download( domain, port,
-			reinterpret_cast<const unsigned char*>(send_raw.c_str()), send_raw.length(),
+			&send_raw[0], send_raw.size(),
 			func, &recv_raw);
 	}
 	else

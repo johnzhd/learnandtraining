@@ -23,7 +23,7 @@
 
 namespace http
 {
-	bool download_one( bool post, const std::string& url, const std::string& head,
+	bool download_one( bool post, std::string url, std::string head,
 		std::vector<unsigned char>& send_raw, std::vector<unsigned char>& recv_raw );
 };
 
