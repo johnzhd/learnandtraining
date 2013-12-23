@@ -4,11 +4,11 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>http://www.163.com:80/</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-target "http://download.csdn.net:80/detail/jingqiu2180/4875639" -log "debug"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>http://www.163.com:80/</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-target "http://www.163.com" -log "debug"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

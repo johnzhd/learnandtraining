@@ -84,7 +84,7 @@ namespace task_work
 		bool b = false;
 		for ( auto& h : v_main )
 		{
-			if ( h.status == 200 && crawl_page(h.translate_wstr_body,nullptr, http_tools::get_page(url)) > 0 )
+			if ( h.status == 200 && crawl_page(reinterpret_cast<char*>(&h.body_origin[0]),h.body_origin.size(),nullptr, http_tools::get_page(url)) > 0 )
 			{
 				b = true;
 			};
@@ -169,8 +169,8 @@ namespace task_work
 			for ( auto& http_package : v_list )
 			{
 				url_list.clear();
-				if ( false == http_package.translate_wstr_body.empty() &&
-					crawl_page(http_package.translate_wstr_body, &url_list, http_tools::get_page(url_point->url_origin)) > 0 )
+				if ( false == http_package.body_origin.empty() &&
+					crawl_page(reinterpret_cast<char*>(&http_package.body_origin[0]),http_package.body_origin.size(), &url_list, http_tools::get_page(url_point->url_origin)) > 0 )
 				{
 					map_ptr->insert_new_url( url_list );
 				}
@@ -240,13 +240,24 @@ namespace task_work
 		size_t n = 0;
 		std::set<std::string> v;
 		v.clear();
-		n = plugins_loader::get_server()->html_parser(body.c_str(),v, page_url);
+		n = plugins_loader::get_server()->html_parser(body,v, page_url);
 		
 		if ( nullptr != url_list )
 			url_list->swap(v);
 		return n;
 	};
 
+	size_t crawl_page( const char* p_body, size_t size_body, std::set<std::string>* url_list, const std::string& page_url )
+	{
+		size_t n = 0;
+		std::set<std::string> v;
+		v.clear();
+		n = plugins_loader::get_server()->html_parser(p_body, size_body, v, page_url);
+		
+		if ( nullptr != url_list )
+			url_list->swap(v);
+		return n;
+	};
 
 
 

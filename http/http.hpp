@@ -44,8 +44,12 @@ namespace http
 			address_(),port_(),
 			buffer_send_(),buffer_recv_(),
 			thread_wait_mutex(),thread_wait_condition()
-		{};
-		~downloader(){};
+		{
+		Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
+		};
+		~downloader(){
+		Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
+		};
 	private:
 		Connection_Ptr socket_ptr_;
 		iocp_server_api::iocp_server_ptr iocp_server_ptr_;

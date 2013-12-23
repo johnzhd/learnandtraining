@@ -19,9 +19,11 @@ namespace policy_api
 			//log
 		}
 
+		Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 	};
 	trigger_base::~trigger_base()
 	{
+		Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 	};
 	bool trigger_base::hit_trigger(std::string trigger)
 	{
@@ -119,13 +121,14 @@ policy_base_server::policy_base_server()
 	:base_map(),
 	origin_base(nullptr)
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 
 
 policy_base_server::~policy_base_server()
 {
-	
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 

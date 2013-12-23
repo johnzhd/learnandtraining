@@ -88,9 +88,43 @@ std::string system_api::run( boost::function<void (bool)> func_init_finished, bo
 		// clear policy
 		policy_server_point->clear();
 
-		High_log( "System stop No.%d \n", ++n );
+		High_log( "System stop No.%d \n", n );
 
 	}while ( bReset );
 	return err_string;
 }
 
+bool system_api::shell_code( int argc, _TCHAR* argv[], std::map<std::string,std::string>& map_out, bool b_transform_lower )
+{
+	if ( argc < 2 )
+		return false;
+
+	std::string key,value;
+
+	for ( int i = 1; i < argc ; i++ )
+	{
+		value = argv[i];
+		if ( value.substr(0,1) != "-" )
+		{
+			if ( key.empty() == false )
+			{
+				map_out.insert(std::pair<std::string,std::string>(key,value));
+				key.clear();
+				continue;
+			};
+
+			return false;
+		}
+
+		if ( key.empty() == false )
+		{
+			map_out.insert(std::pair<std::string,std::string>(key,""));
+		};
+		key = value;
+		if ( b_transform_lower )
+			std::transform(key.begin(),key.end(),key.begin(), tolower);
+	};
+
+	return true;
+
+};

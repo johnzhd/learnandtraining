@@ -67,6 +67,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>
+      </ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -114,7 +117,6 @@
     <ClInclude Include="system.h" />
     <ClInclude Include="system_log.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="task_api.h" />
     <ClInclude Include="task_data.h" />
     <ClInclude Include="task_work.h" />
     <ClInclude Include="thread_pool.h" />
@@ -148,7 +150,6 @@
     </ClCompile>
     <ClCompile Include="system.cpp" />
     <ClCompile Include="system_log.cpp" />
-    <ClCompile Include="task_api.cpp" />
     <ClCompile Include="task_data.cpp" />
     <ClCompile Include="task_work.cpp" />
     <ClCompile Include="test_http_main.cpp">

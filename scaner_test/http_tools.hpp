@@ -230,8 +230,8 @@ namespace http_tools
 	class http_info
 	{
 	public:
-		http_info():status(0),head(),translate_wstr_body(L""),body_origin(){};
-		~http_info(){};
+		http_info():status(0),head(),translate_wstr_body(L""),body_origin(){Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));};
+		~http_info(){Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));};
 		http_info( const http_info& src ){ *this = src;};
 		http_info& operator=(const http_info& src)
 		{

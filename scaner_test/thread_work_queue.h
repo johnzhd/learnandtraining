@@ -12,8 +12,8 @@ typedef boost::function<void ()> function_type;
 class thread_work_queue
 {
 public:
-	thread_work_queue(void)	{clear();};
-	~thread_work_queue(void){clear();};
+	thread_work_queue(void)	{clear();Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));};
+	~thread_work_queue(void){clear();Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));};
 protected:
 	std::deque<function_type> deque_content;
 	boost::mutex content_mutex;

@@ -40,7 +40,7 @@ namespace http_tools
 		// Accept: */*
 		// Accept-Encoding: gzip, deflate
 		if ( head_.find( "Host:" ) == std::string::npos )
-			str += "Host: " + domain + ":" + port + "\r\n";
+			str += "Host: " + domain + port + "\r\n";
 		if ( head_.find( "Accept:" ) == std::string::npos )
 			str += "Accept: */*\r\n";
 		if ( head_.find( "Accept-Encoding:" ) == std::string::npos )
@@ -463,6 +463,7 @@ namespace http_tools
 					size_t n_temp;
 					if ( false == gzip::ungzip( v.body_origin, v.body_origin.size(), v_temp,n_temp) )
 					{
+						// keep unzip successed bytes
 						v_temp.erase( v_temp.begin() + n_temp, v_temp.end() );
 					}
 					

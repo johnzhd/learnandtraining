@@ -38,8 +38,8 @@ namespace system_log
 		};
 		inline bool pass( log_type ty )
 		{
-			if ( show_type == Debug )
-				return show_type == ty;
+			//if ( show_type == Debug )
+			//	return show_type == ty;
 			return show_type >= ty;
 		};
 	public:

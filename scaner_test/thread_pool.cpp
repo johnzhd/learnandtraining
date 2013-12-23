@@ -25,12 +25,16 @@ thread_pool::thread_pool(void)
 	running_count(0)
 {
 	clear();
+
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 
 thread_pool::~thread_pool(void)
 {
 	clear();
+
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 bool thread_pool::start( size_t total )

@@ -14,8 +14,8 @@ class sync_single{
 private:
 	HANDLE hEvent;
 public:
-	sync_single():hEvent(NULL){hEvent = CreateEvent(NULL, FALSE,FALSE,NULL);};
-	~sync_single(){if ( hEvent ) CloseHandle( hEvent);};
+	sync_single():hEvent(NULL){hEvent = CreateEvent(NULL, FALSE,FALSE,NULL);Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));};
+	~sync_single(){if ( hEvent ) CloseHandle( hEvent);Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));};
 public:
 	void operator() (){ if (hEvent) SetEvent(hEvent);};
 

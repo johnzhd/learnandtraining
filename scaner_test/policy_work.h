@@ -67,12 +67,12 @@ public:
 	void clear();
 public:
 	size_t get_policy_count(std::string trigger = "") const;
+	bool get_policys( std::string trigger, std::vector<std::string>& policy_list) const;
+
+
 
 	policy_work_ptr clone_policy( std::string name ) const;
 	policy_work_ptr clone_policy( size_t no ) const;
-
-
-	bool get_policys( std::string trigger, std::vector<std::string>& policy_list) const;
 
 	
 	void free_policy( policy_work_ptr ptr );

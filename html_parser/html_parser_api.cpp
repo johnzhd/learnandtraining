@@ -95,8 +95,46 @@ static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::
 size_t API_html_parser(const std::string& body, std::set<std::string>& v_out, std::string str_domain)
 {
 	size_t s = v_out.size();
+
+	// set locale just for avoid isspace assert
+#ifdef _MSC_VER
+	char* old_locale = _strdup( setlocale(LC_CTYPE,NULL) );
+	setlocale( LC_CTYPE, "chs" );
+#endif
+
 	GumboOutput* output = gumbo_parse_with_options(&kGumboDefaultOptions, body.c_str(), body.length());
-	if (output->root->type != GUMBO_NODE_ELEMENT) {
+	
+#ifdef _MSC_VER
+	setlocale( LC_CTYPE, old_locale);
+	free(old_locale);
+#endif
+
+	if (output->root->type == GUMBO_NODE_ELEMENT) {
+		search_for_links(output->root,v_out,str_domain);
+	}
+	gumbo_destroy_output(&kGumboDefaultOptions, output);
+
+	return v_out.size() - s;
+};
+
+size_t API_html_parser_1(const char* p_body, size_t size_body, std::set<std::string>& v_out, std::string str_domain)
+{
+	size_t s = v_out.size();
+	
+#ifdef _MSC_VER
+	char* old_locale = _strdup( setlocale(LC_CTYPE,NULL) );
+	setlocale( LC_CTYPE, "chs" );
+#endif
+
+	GumboOutput* output = gumbo_parse_with_options(&kGumboDefaultOptions, p_body, size_body);
+
+
+#ifdef _MSC_VER
+	setlocale( LC_CTYPE, old_locale);
+	free(old_locale);
+#endif
+
+	if (output->root->type == GUMBO_NODE_ELEMENT) {
 		search_for_links(output->root,v_out,str_domain);
 	}
 	gumbo_destroy_output(&kGumboDefaultOptions, output);

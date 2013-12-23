@@ -6,11 +6,13 @@
 connect_ssl::connect_ssl(boost::asio::io_service& io_service, boost::asio::ssl::context& context)
 	: socket_(io_service,context)
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 
 connect_ssl::~connect_ssl(void)
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 boost::asio::ssl::stream<boost::asio::ip::tcp::socket>& connect_ssl::socket(){

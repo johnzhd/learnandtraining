@@ -5,11 +5,13 @@
 connect_socket::connect_socket(boost::asio::io_service& io_service)
 	: socket_(io_service)
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 
 connect_socket::~connect_socket(void)
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 boost::asio::ip::tcp::socket& connect_socket::socket(){

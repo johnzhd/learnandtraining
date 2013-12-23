@@ -17,7 +17,7 @@ bool ungzip(std::vector<unsigned char>& in, size_t count_in, std::vector<unsigne
 	compr = reinterpret_cast<char*>(&in[0]);
 	comprLen =count_in;
 	out.clear();
-	out.resize( count_in * 10,0 );
+	out.resize( count_in * 16,0 );
 	uncompr = reinterpret_cast<char*>(&out[0]);
 	uncomprLen = out.size();
 	memset(&d_stream,0,sizeof(z_stream));
@@ -40,7 +40,7 @@ bool ungzip(std::vector<unsigned char>& in, size_t count_in, std::vector<unsigne
 	do
 	{
 		d_stream.next_out=reinterpret_cast<Byte*>(uncompr+count_out);
-		d_stream.avail_out=uncomprLen;
+		d_stream.avail_out= uncomprLen - count_out;
 		ret = inflate(&d_stream,Z_NO_FLUSH);
 		_ASSERT(ret != Z_STREAM_ERROR);
 		switch (ret)
@@ -59,7 +59,17 @@ bool ungzip(std::vector<unsigned char>& in, size_t count_in, std::vector<unsigne
 	}while(d_stream.avail_out==0);
 	inflateEnd(&d_stream);
 
-	out.erase( out.begin() + count_out, out.end() );
+	if ( count_out > out.size() )
+	{
+		// crash it!!
+		assert(false);
+		throw std::system_error(std::error_code());
+	};
+
+	auto it = out.begin() + count_out;
+	if ( it != out.end() )
+		out.erase( it, out.end() );
+
 	return true;
 }
 

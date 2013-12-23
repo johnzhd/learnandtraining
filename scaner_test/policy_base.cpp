@@ -73,11 +73,13 @@ policy_base::policy_base(init_environment_type type)
 	lua_mutex(),
 	m_type(type)
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 policy_base::~policy_base()
 {
 	clear();
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 char* policy_base::buff()
@@ -275,12 +277,14 @@ policy_work::policy_work(lua_State * lu, std::string str)
 	str_name(str),
 	lua_mutex()
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 
 policy_work::~policy_work(void)
 {
 	clear();
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 lua_State*& policy_work::point()

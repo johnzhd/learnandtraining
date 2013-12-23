@@ -78,9 +78,6 @@
     <ClInclude Include="system.h">
       <Filter>system</Filter>
     </ClInclude>
-    <ClInclude Include="task_api.h">
-      <Filter>task</Filter>
-    </ClInclude>
     <ClInclude Include="db_api.h">
       <Filter>db</Filter>
     </ClInclude>
@@ -148,9 +145,6 @@
     </ClCompile>
     <ClCompile Include="system.cpp">
       <Filter>system</Filter>
-    </ClCompile>
-    <ClCompile Include="task_api.cpp">
-      <Filter>task</Filter>
     </ClCompile>
     <ClCompile Include="db_api.cpp">
       <Filter>db</Filter>

@@ -15,10 +15,12 @@ namespace task_data
 	task_start_struct::task_start_struct(std::string url, std::string head, std::string trigger)
 		:main_url(url),base_head(head),base_trigger(trigger),running_trigger(""),running_cookie(""),running_head(""),update_mutex()
 	{
+		Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 	};
 
 	task_start_struct::~task_start_struct()
 	{
+		Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 	};
 
 	void task_start_struct::clear()
@@ -68,10 +70,13 @@ task_url_struct::task_url_struct(std::string url)
 	:url_origin(url),b_post(false),first_send(),first_recv(),translate_body(L""),running_trigger("")
 {
 	running_thread = -2;
+
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 task_url_struct::~task_url_struct()
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 
@@ -85,10 +90,12 @@ namespace task_data
 task_err_page::task_err_page()
 	:recv_data(L""),failed_type(Basic_404)
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 task_err_page::~task_err_page()
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 void task_err_page::set_err_page( err_page_type type, std::wstring data )
@@ -117,10 +124,13 @@ task_result_struct::task_result_struct(std::string url, std::string id, std::str
 	{
 		url_data.swap(data);
 	}
+
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 }
 
 task_result_struct::~task_result_struct()
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 
@@ -131,7 +141,8 @@ task_result_struct::~task_result_struct()
 
 namespace task_data
 {
-	const size_t task_map::running_url_max = 30;
+const size_t task_map::running_url_max = 30;
+
 task_map::task_map(task_start_struct_ptr ptr)
 	:start_ptr(ptr),err_page_ptr(nullptr),url_no_map(),no_url_map(),url_list(),result_list(),
 	url_mutex(),result_mutex()
@@ -156,10 +167,13 @@ task_map::task_map(task_start_struct_ptr ptr)
 	finished_no = 0;
 
 	running_url_count = 0;
+
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 task_map::~task_map()
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 std::string task_map::get_task_union_id()
@@ -353,10 +367,12 @@ namespace task_data
 task_map_list::task_map_list()
 	:m_list(),op_mutex()
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 task_map_list::~task_map_list()
 {
+	Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 };
 
 bool task_map_list::insert_new(task_map_ptr ptr )
