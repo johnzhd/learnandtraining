@@ -37,13 +37,13 @@ static int print_message(GumboParser* parser, GumboStringBuffer* output,
   va_list args;
   va_start(args, format);
   int remaining_capacity = output->capacity - output->length;
-  int bytes_written = vsnprintf(output->data + output->length,
+  int bytes_written = vsnprintf((char*)(output->data + output->length),
                                 remaining_capacity, format, args);
   if (bytes_written > remaining_capacity) {
     gumbo_string_buffer_reserve(
         parser, output->capacity + bytes_written, output);
     remaining_capacity = output->capacity - output->length;
-    bytes_written = vsnprintf(output->data + output->length,
+    bytes_written = vsnprintf((char*)(output->data + output->length),
                               remaining_capacity, format, args);
   }
   output->length += bytes_written;

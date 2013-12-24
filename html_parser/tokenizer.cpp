@@ -165,7 +165,7 @@ typedef struct GumboInternalTokenizerState {
 
   // The current cursor position we're emitting from within
   // _temporary_buffer.data.  NULL whenever we're not flushing the buffer.
-  const char* _temporary_buffer_emit;
+  const DE_CHAR* _temporary_buffer_emit;
 
   // The temporary buffer is also used by the spec to check whether we should
   // enter the script data double escaped state, but we can't use the same
@@ -612,7 +612,7 @@ static StateResult emit_comment(GumboParser* parser, GumboToken* output) {
 static bool maybe_emit_from_temporary_buffer(
     GumboParser* parser, GumboToken* output) {
   GumboTokenizerState* tokenizer = parser->_tokenizer_state;
-  const char* c = tokenizer->_temporary_buffer_emit;
+  const DE_CHAR* c = tokenizer->_temporary_buffer_emit;
   GumboStringBuffer* buffer = &tokenizer->_temporary_buffer;
 
   if (!c || c >= buffer->data + buffer->length) {
@@ -839,7 +839,7 @@ static bool is_appropriate_end_tag(GumboParser* parser) {
   gumbo_string_buffer_append_codepoint(parser, '\0', &tag_state->_buffer);
   --tag_state->_buffer.length;
   return tag_state->_last_start_tag != GUMBO_TAG_LAST &&
-      tag_state->_last_start_tag == gumbo_tag_enum(tag_state->_buffer.data);
+      tag_state->_last_start_tag == gumbo_tag_enum((char*)tag_state->_buffer.data);
 }
 
 void gumbo_tokenizer_state_init(

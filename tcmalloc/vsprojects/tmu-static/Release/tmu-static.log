@@ -1,0 +1,87 @@
+﻿生成启动时间为 2013/12/23 17:34:05。
+     1>项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\tmu-static\tmu-static.vcxproj”在节点 3 上(Build 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt /D PERFTOOLS_DLL_DECL= ..\..\src\central_freelist.cc "..\..\src\heap-profile-table.cc" ..\..\src\windows\ia32_modrm_map.cc ..\..\src\windows\ia32_opcode_map.cc ..\..\src\common.cc ..\..\src\internal_logging.cc ..\..\src\base\logging.cc ..\..\src\base\low_level_alloc.cc ..\..\src\malloc_extension.cc ..\..\src\malloc_hook.cc ..\..\src\memory_region_map.cc ..\..\src\windows\mini_disassembler.cc ..\..\src\page_heap.cc ..\..\src\sampler.cc ..\..\src\windows\patch_functions.cc ..\..\src\windows\port.cc ..\..\src\windows\preamble_patcher.cc ..\..\src\windows\preamble_patcher_with_stub.cc "..\..\src\windows\system-alloc.cc" ..\..\src\raw_printer.cc ..\..\src\span.cc ..\..\src\static_vars.cc ..\..\src\tests\tcmalloc_unittest.cc ..\..\src\tests\testutil.cc ..\..\src\thread_cache.cc
+         central_freelist.cc
+         heap-profile-table.cc
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\heap-profile-table.h(206): warning C4800: “const uintptr_t”: 将值强制为布尔值“true”或“false”(性能警告)
+         ia32_modrm_map.cc
+     1>..\..\src\windows\ia32_modrm_map.cc : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         ia32_opcode_map.cc
+     1>..\..\src\windows\ia32_opcode_map.cc : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         common.cc
+         internal_logging.cc
+         logging.cc
+         low_level_alloc.cc
+         malloc_extension.cc
+         malloc_hook.cc
+         memory_region_map.cc
+         mini_disassembler.cc
+         page_heap.cc
+         sampler.cc
+         patch_functions.cc
+         port.cc
+         preamble_patcher.cc
+         preamble_patcher_with_stub.cc
+         system-alloc.cc
+         raw_printer.cc
+         正在生成代码...
+         正在编译...
+         span.cc
+         static_vars.cc
+         tcmalloc_unittest.cc
+         testutil.cc
+         thread_cache.cc
+         正在生成代码...
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt /D PERFTOOLS_DLL_DECL= ..\..\src\base\dynamic_annotations.c
+         dynamic_annotations.c
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\src\symbolize.cc ..\..\src\stacktrace.cc ..\..\src\stack_trace_table.cc
+         symbolize.cc
+         stacktrace.cc
+         stack_trace_table.cc
+         正在生成代码...
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt /D PERFTOOLS_DLL_DECL= ..\..\src\base\spinlock.cc ..\..\src\base\spinlock_internal.cc ..\..\src\base\sysinfo.cc
+         spinlock.cc
+         spinlock_internal.cc
+         sysinfo.cc
+         正在生成代码...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\projuct\scaner_test\tcmalloc\gperftools\Release\tcmalloc_minimal_unittest-static.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\projuct\scaner_test\tcmalloc\gperftools\Release\tcmalloc_minimal_unittest-static.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\projuct\scaner_test\tcmalloc\gperftools\Release\tcmalloc_minimal_unittest-static.lib" /MACHINE:X86 /SAFESEH Release\central_freelist.obj
+         Release\dynamic_annotations.obj
+         "Release\heap-profile-table.obj"
+         Release\symbolize.obj
+         Release\ia32_modrm_map.obj
+         Release\ia32_opcode_map.obj
+         Release\common.obj
+         Release\internal_logging.obj
+         Release\logging.obj
+         Release\low_level_alloc.obj
+         Release\malloc_extension.obj
+         Release\malloc_hook.obj
+         Release\memory_region_map.obj
+         Release\mini_disassembler.obj
+         Release\page_heap.obj
+         Release\sampler.obj
+         Release\patch_functions.obj
+         Release\port.obj
+         Release\preamble_patcher.obj
+         Release\preamble_patcher_with_stub.obj
+         "Release\system-alloc.obj"
+         Release\raw_printer.obj
+         Release\span.obj
+         Release\stacktrace.obj
+         Release\stack_trace_table.obj
+         Release\static_vars.obj
+         Release\spinlock.obj
+         Release\spinlock_internal.obj
+         Release\sysinfo.obj
+         Release\tcmalloc_unittest.obj
+         Release\testutil.obj
+         Release\thread_cache.obj
+            正在创建库 E:\projuct\scaner_test\tcmalloc\gperftools\Release\tcmalloc_minimal_unittest-static.lib 和对象 E:\projuct\scaner_test\tcmalloc\gperftools\Release\tcmalloc_minimal_unittest-static.exp
+         tmu-static.vcxproj -> E:\projuct\scaner_test\tcmalloc\gperftools\Release\tcmalloc_minimal_unittest-static.exe
+     1>已完成生成项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\tmu-static\tmu-static.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:02:00.19

@@ -1,0 +1,14 @@
+﻿生成启动时间为 2013/12/23 17:36:06。
+     1>项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\page_heap_test\page_heap_test.vcxproj”在节点 3 上(Build 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /Zi /nologo /W3 /WX- /O2 /Oy- /D WIN32 /D NDEBUG /D _CONSOLE /D _MBCS /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\src\tests\page_heap_test.cc
+         page_heap_test.cc
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\projuct\scaner_test\tcmalloc\gperftools\Release\page_heap_test.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\projuct\scaner_test\tcmalloc\gperftools\Release\page_heap_test.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\projuct\scaner_test\tcmalloc\gperftools\Release\page_heap_test.lib" /MACHINE:X86 /SAFESEH Release\page_heap_test.obj
+         E:\projuct\scaner_test\tcmalloc\gperftools\Release\libtcmalloc_minimal.lib
+         page_heap_test.vcxproj -> E:\projuct\scaner_test\tcmalloc\gperftools\Release\page_heap_test.exe
+     1>已完成生成项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\page_heap_test\page_heap_test.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:18.53

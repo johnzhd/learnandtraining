@@ -42,14 +42,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)socket;E:\boost_1_55_0;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)zlib;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)$(Configuration)\;E:\boost_1_55_0\stage\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)$(Configuration)\;E:\boost_1_55_0\stage\lib;$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(SolutionDir)socket;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(ReferencePath)</ReferencePath>
     <SourcePath>$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)socket;E:\boost_1_55_0;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)zlib;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\boost_1_55_0\stage\lib;$(SolutionDir)$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>E:\boost_1_55_0\stage\lib;$(SolutionDir)$(Configuration)\;$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(SolutionDir)socket;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(ReferencePath)</ReferencePath>
     <SourcePath>$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -67,9 +67,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <ForceSymbolReferences>
-      </ForceSymbolReferences>
+      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,6 +87,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

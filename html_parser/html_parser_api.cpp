@@ -121,7 +121,7 @@ size_t API_html_parser_1(const char* p_body, size_t size_body, std::set<std::str
 {
 	size_t s = v_out.size();
 	
-#ifdef _MSC_VER
+#if 0
 	char* old_locale = _strdup( setlocale(LC_CTYPE,NULL) );
 	setlocale( LC_CTYPE, "chs" );
 #endif
@@ -129,7 +129,7 @@ size_t API_html_parser_1(const char* p_body, size_t size_body, std::set<std::str
 	GumboOutput* output = gumbo_parse_with_options(&kGumboDefaultOptions, p_body, size_body);
 
 
-#ifdef _MSC_VER
+#if 0
 	setlocale( LC_CTYPE, old_locale);
 	free(old_locale);
 #endif

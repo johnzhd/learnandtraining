@@ -1,0 +1,93 @@
+﻿生成启动时间为 2013/12/23 14:25:59。
+     1>项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\tmu-static\tmu-static.vcxproj”在节点 3 上(Build 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt /D PERFTOOLS_DLL_DECL= ..\..\src\central_freelist.cc "..\..\src\heap-profile-table.cc" ..\..\src\windows\ia32_modrm_map.cc ..\..\src\windows\ia32_opcode_map.cc ..\..\src\common.cc ..\..\src\internal_logging.cc ..\..\src\base\logging.cc ..\..\src\base\low_level_alloc.cc ..\..\src\malloc_extension.cc ..\..\src\malloc_hook.cc ..\..\src\memory_region_map.cc ..\..\src\windows\mini_disassembler.cc ..\..\src\page_heap.cc ..\..\src\sampler.cc ..\..\src\windows\patch_functions.cc ..\..\src\windows\port.cc ..\..\src\windows\preamble_patcher.cc ..\..\src\windows\preamble_patcher_with_stub.cc "..\..\src\windows\system-alloc.cc" ..\..\src\raw_printer.cc ..\..\src\span.cc ..\..\src\static_vars.cc ..\..\src\tests\tcmalloc_unittest.cc ..\..\src\tests\testutil.cc ..\..\src\thread_cache.cc
+         thread_cache.cc
+         testutil.cc
+         tcmalloc_unittest.cc
+         static_vars.cc
+         span.cc
+         raw_printer.cc
+         system-alloc.cc
+         preamble_patcher_with_stub.cc
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\windows\mini_disassembler.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         preamble_patcher.cc
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\windows\mini_disassembler.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         port.cc
+         patch_functions.cc
+         sampler.cc
+         page_heap.cc
+         mini_disassembler.cc
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\windows\mini_disassembler.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         memory_region_map.cc
+         malloc_hook.cc
+         malloc_extension.cc
+         low_level_alloc.cc
+         logging.cc
+         internal_logging.cc
+         正在生成代码...
+         正在编译...
+         common.cc
+         ia32_opcode_map.cc
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\windows\ia32_opcode_map.cc : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\windows\mini_disassembler.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         ia32_modrm_map.cc
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\windows\ia32_modrm_map.cc : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\windows\mini_disassembler.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         heap-profile-table.cc
+     1>e:\projuct\scaner_test\tcmalloc\gperftools\src\heap-profile-table.h(206): warning C4800: “const uintptr_t”: 将值强制为布尔值“true”或“false”(性能警告)
+         central_freelist.cc
+         正在生成代码...
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TC /analyze- /errorReport:prompt /D PERFTOOLS_DLL_DECL= ..\..\src\base\dynamic_annotations.c
+         dynamic_annotations.c
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\src\symbolize.cc ..\..\src\stacktrace.cc ..\..\src\stack_trace_table.cc
+         stack_trace_table.cc
+         stacktrace.cc
+         symbolize.cc
+         正在生成代码...
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt /D PERFTOOLS_DLL_DECL= ..\..\src\base\spinlock.cc ..\..\src\base\spinlock_internal.cc ..\..\src\base\sysinfo.cc
+         sysinfo.cc
+         spinlock_internal.cc
+         spinlock.cc
+         正在生成代码...
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\projuct\scaner_test\tcmalloc\gperftools\Debug\tcmalloc_minimal_unittest-static.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\projuct\scaner_test\tcmalloc\gperftools\Debug\tcmalloc_minimal_unittest-static.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\projuct\scaner_test\tcmalloc\gperftools\Debug\tcmalloc_minimal_unittest-static.lib" /MACHINE:X86 /SAFESEH Debug\central_freelist.obj
+         Debug\dynamic_annotations.obj
+         "Debug\heap-profile-table.obj"
+         Debug\symbolize.obj
+         Debug\ia32_modrm_map.obj
+         Debug\ia32_opcode_map.obj
+         Debug\common.obj
+         Debug\internal_logging.obj
+         Debug\logging.obj
+         Debug\low_level_alloc.obj
+         Debug\malloc_extension.obj
+         Debug\malloc_hook.obj
+         Debug\memory_region_map.obj
+         Debug\mini_disassembler.obj
+         Debug\page_heap.obj
+         Debug\sampler.obj
+         Debug\patch_functions.obj
+         Debug\port.obj
+         Debug\preamble_patcher.obj
+         Debug\preamble_patcher_with_stub.obj
+         "Debug\system-alloc.obj"
+         Debug\raw_printer.obj
+         Debug\span.obj
+         Debug\stacktrace.obj
+         Debug\stack_trace_table.obj
+         Debug\static_vars.obj
+         Debug\spinlock.obj
+         Debug\spinlock_internal.obj
+         Debug\sysinfo.obj
+         Debug\tcmalloc_unittest.obj
+         Debug\testutil.obj
+         Debug\thread_cache.obj
+     1>central_freelist.obj : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/SAFESEH”规范)
+            正在创建库 E:\projuct\scaner_test\tcmalloc\gperftools\Debug\tcmalloc_minimal_unittest-static.lib 和对象 E:\projuct\scaner_test\tcmalloc\gperftools\Debug\tcmalloc_minimal_unittest-static.exp
+         tmu-static.vcxproj -> E:\projuct\scaner_test\tcmalloc\gperftools\Debug\tcmalloc_minimal_unittest-static.exe
+     1>已完成生成项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\tmu-static\tmu-static.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:01:55.11

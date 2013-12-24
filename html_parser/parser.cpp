@@ -2757,7 +2757,7 @@ static bool handle_in_body(GumboParser* parser, GumboToken* token) {
     if (prompt_attr) {
       int prompt_attr_length = strlen(prompt_attr->value);
       gumbo_string_buffer_destroy(parser, &text_state->_buffer);
-      text_state->_buffer.data = gumbo_copy_stringz(parser, prompt_attr->value);
+	  text_state->_buffer.data = (DE_CHAR*)gumbo_copy_stringz(parser, prompt_attr->value);
       text_state->_buffer.length = prompt_attr_length;
       text_state->_buffer.capacity = prompt_attr_length + 1;
       gumbo_destroy_attribute(parser, prompt_attr);

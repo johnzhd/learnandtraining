@@ -1,0 +1,15 @@
+﻿生成启动时间为 2013/12/23 14:28:39。
+     1>项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\sampler_test\sampler_test.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I..\..\src\windows /I..\..\src /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\src\tests\sampler_test.cc
+         sampler_test.cc
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\projuct\scaner_test\tcmalloc\gperftools\Debug\sampler_test.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"E:\projuct\scaner_test\tcmalloc\gperftools\Debug\sampler_test.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\projuct\scaner_test\tcmalloc\gperftools\Debug\sampler_test.lib" /MACHINE:X86 /SAFESEH Debug\sampler_test.obj
+         "E:\projuct\scaner_test\tcmalloc\gperftools\Debug\libtcmalloc_minimal-debug.lib"
+     1>sampler_test.obj : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/SAFESEH”规范)
+         sampler_test.vcxproj -> E:\projuct\scaner_test\tcmalloc\gperftools\Debug\sampler_test.exe
+     1>已完成生成项目“E:\projuct\scaner_test\tcmalloc\gperftools\vsprojects\sampler_test\sampler_test.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:12.88

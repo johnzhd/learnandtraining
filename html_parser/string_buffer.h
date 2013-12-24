@@ -35,7 +35,7 @@ struct GumboInternalParser;
 // so be sure not to use ordinary string manipulation functions on it.
 typedef struct {
   // A pointer to the beginning of the string.  NULL iff length == 0.
-  char* data;
+  DE_CHAR* data;
 
   // The length of the string fragment, in bytes.  May be zero.
   size_t length;

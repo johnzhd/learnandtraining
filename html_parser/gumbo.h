@@ -50,6 +50,12 @@
 //#endif
 
 #ifdef _MSC_VER
+#define DE_CHAR unsigned char
+#else
+#define DE_CHAR char
+#endif
+
+#ifdef _MSC_VER
 #define _strcasecmp _stricmp 
 #define _strncasecmp _strnicmp
 #endif

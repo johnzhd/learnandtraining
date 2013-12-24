@@ -400,17 +400,18 @@ namespace http_tools
 			};
 
 			// to be continue
-
-			if ( false == v.head["content-length"].empty() )
+			decltype( v.head.begin() ) it_head;
+			if ( v.head.end() != (it_head = v.head.find("content-length"))  && false == it_head->second.empty()  )
 			{
-				int nLength = atoi( v.head["content-length"].c_str() );
+				int nLength = atoi( it_head->second.c_str() );
 				if ( itEnd - itWork >= nLength && nLength > 0 )
 				{
 					v.body_origin.insert(v.body_origin.end(), itWork, itWork + nLength );
 				}
 			}
-			else if ( false == v.head["transfer-encoding"].empty()
-				&& v.head["transfer-encoding"].find( "chunked" ) != std::string::npos )
+			else if ( v.head.end() != (it_head = v.head.find("transfer-encoding")) 
+				&& false == it_head->second.empty()
+				&& it_head->second.find( "chunked" ) != std::string::npos )
 			{
 				it = itWork;
 				while ( itWork != itEnd )
@@ -455,38 +456,33 @@ namespace http_tools
 			it_package = itWork;
 
 			// deal body
-			if ( false == v.head["content-encoding"].empty() )
+			if ( v.head.end() != (it_head = v.head.find("content-encoding")) && false == it_head->second.empty() )
 			{
-				if ( v.head["content-encoding"].find( "gzip" ) != std::string::npos )
+				if ( it_head->second.find( "gzip" ) != std::string::npos )
 				{
 					decltype(v.body_origin) v_temp;
-					size_t n_temp;
-					if ( false == gzip::ungzip( v.body_origin, v.body_origin.size(), v_temp,n_temp) )
+					if ( true == gzip::ungzip( v.body_origin, v_temp) )
 					{
-						// keep unzip successed bytes
-						v_temp.erase( v_temp.begin() + n_temp, v_temp.end() );
+						v.body_origin.swap( v_temp );
 					}
-					
-					v.body_origin.swap( v_temp );
+					else
+					{
+						// unzip err
+					}
 				}
-				/*
-				else if ( v.head["content-encoding"].find( "gzip" ) != std::string::npos )
-				{
-					// to be continue
-				}
-				*/
 			}
-				size_t n_temp = 0;
+
+			size_t n_temp = 0;
 			v.body_charset.clear();
-			if ( false == v.head["content-type"].empty() )
+			if ( v.head.end() != (it_head = v.head.find("content-type")) && false == it_head->second.empty() )
 			{
-				if ( v.head["content-type"].find( "text/" ) != std::string::npos )
+				if ( it_head->second.find( "text/" ) != std::string::npos )
 				{
-					if ((n_temp = v.head["content-type"].find("charset=")) != std::string::npos)
+					if ((n_temp = it_head->second.find("charset=")) != std::string::npos)
 					{
 						n_temp += strlen( "charset=" );
 						std::string str;
-						str = v.head["content-type"].substr( n_temp );
+						str = it_head->second.substr( n_temp );
 						if ( std::string::npos != (n_temp = str.find_first_of( " ;\r\n" )) )
 							str.erase(n_temp);
 
