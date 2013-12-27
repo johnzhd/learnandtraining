@@ -15,3 +15,10 @@
 
 #include "system_log.h"
 
+#ifndef IN
+#define IN
+#endif
+
+#ifndef OUT
+#define OUT
+#endif

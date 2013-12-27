@@ -9,6 +9,7 @@
 
 #include "system.h"
 
+#include "task_data.h"
 #include "task_work.h"
 
 #include <string>
@@ -18,7 +19,7 @@
 // to resolve the memory problem
 
 
-std::string start_task;
+task_data::task_start_struct_ptr g_start_ptr = nullptr;
 
 void function_start(bool b)
 {
@@ -26,27 +27,19 @@ void function_start(bool b)
 	{
 		Noise_log("[%s](%d) %s\n", __FUNCTION__, __LINE__, "Call task_work::start in thread");
 		std::string str;
-		str = start_task;
-		boost::function<void ()> func = [=]()->void{ Function_log("[start] %s.\n", task_work::start(start_task,"",""));};
+		if ( g_start_ptr == nullptr )
+		{
+			assert(false);
+			return ;
+		};
+		boost::function<void ()> func = [=]()->void{ Function_log("[start] %s.\n", task_work::start(g_start_ptr));};
 		boost::thread io_server_thread(func);
 	};
 	
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+void set_log( std::string str )
 {
-	std::map<std::string,std::string> map_temp;
-
-	if ( false == system_api::shell_code(argc, argv, map_temp, true) || map_temp["-target"].empty() )
-	{
-		printf( "Err! Unkown command. e.g.\n>scaner_test -target \"http://www.rising.com.cn\" -log \"normal\"\n" );
-		system("pause");
-		return 0;
-	};
-	
-
-	std::string str;
-	str = map_temp["-log"];
 	if ( str.empty() )
 		str = "normal";
 
@@ -74,14 +67,58 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		system_log::set_log_show_type(system_log::Silence);
 	}
+};
+
+void set_start( std::map<std::string,std::string>& map_temp )
+{
+	std::string str;
+	str = map_temp["-target"];
+	if ( str.empty() )
+	{
+		g_start_ptr == nullptr;
+		return ;
+	}
+	g_start_ptr.reset( new task_data::task_start_struct(str, map_temp["-head"], map_temp["-trigger"]) );
+
+	str = map_temp["-domainlevel"];
+	if ( false == str.empty() )
+	{
+		g_start_ptr->domain_sub_level_min = atoi( str.c_str() );
+	};
+
+};
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	std::map<std::string,std::string> map_temp;
+	std::string str_temp;
+
+	if ( false == system_api::shell_code(argc, argv, map_temp, true) || map_temp["-target"].empty() )
+	{
+		printf( "Err! Unkown command. e.g.\n>scaner_test -target \"http://www.rising.com.cn\" -log \"normal\"\n" );
+		system("pause");
+		return 0;
+	};
+	
+
+	set_log( map_temp["-log"]);
+
+	set_start( map_temp );
+
+	if ( g_start_ptr == nullptr )
+	{
+		printf( "Err! No task infomation. e.g.\n>scaner_test -target \"http://www.rising.com.cn\" -log \"normal\"\n" );
+		system("pause");
+		return 0;
+	};
+
 
 	Noise_log("[%s](%d) %s\n", __FUNCTION__, __LINE__, "Call function_start in thread");
-	
-	start_task = map_temp["-target"];
 
-	str = system_api::run(function_start);
 
-	Noise_log("[%s](%d) system_api::run return %s\n", __FUNCTION__, __LINE__, str);
+	str_temp = system_api::run(function_start);
+
+	Noise_log("[%s](%d) system_api::run return %s\n", __FUNCTION__, __LINE__, str_temp);
 
 	system("pause");
 	return 0;

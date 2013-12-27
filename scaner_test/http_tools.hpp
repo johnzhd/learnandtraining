@@ -8,7 +8,6 @@
 #include <map>
 
 
-
 namespace http_tools
 {
 	template <class T> 
@@ -17,39 +16,6 @@ namespace http_tools
 		ss << value;
 		return ss.str();
 	}
-
-	template<typename Package_Ptr, typename Content>
-	size_t get_urls_from_package( Package_Ptr begin_, Package_Ptr end_, Content& out_ )
-	{
-		try
-		{
-			size_t n = 0;
-			//href=
-			//src=
-			//<FORM METHOD=post ACTION="/names.nsf?Login"
-			std::string pattern ("([^c]ei)");
-			pattern = "([[:alpha:]]*)" + pattern + "([[:alpha:]]*)";
-
-			std::regex r(pattern, std::regex::icase);
-			for(std::sregex_iterator it(begin_, end_,r),end_it;
-				it != end_it; ++it)
-			{
-				(*it).str(0);
-				(*it).str(1); // frist "([[:alpha:]]*)"
-				(*it).str(2); // "([^c]ei)"
-				(*it).str(3); // second "([[:alpha:]]*)"
-				out_.push_back( it->str() );
-				n++;
-			}
-		}
-		catch ( std::regex_error &e)
-		{
-		}
-		catch (...)
-		{
-		};
-		return n;
-	};
 
 	// make up
 	enum send_package_type
@@ -75,12 +41,10 @@ namespace http_tools
 	std::string format_url( std::string origin_url );
 
 	std::string format_head(std::string head);
+
+	bool format_url_params( std::string& url, std::map<std::string,std::vector<unsigned char>>& params );
 	
 	bool is_ssl( const std::string& protocal );
-
-
-	
-	bool url_2_ip( const std::string& url, std::string ip, std::string port );
 
 	template<typename Byte_Ptr>
 	bool http_get_head( Byte_Ptr& begin_, Byte_Ptr end_,

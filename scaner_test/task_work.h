@@ -12,14 +12,15 @@ namespace task_work
 {
 	std::string start( std::string url, std::string head, std::string trigger );
 
+	std::string start( task_data::task_start_struct_ptr start_ptr );
+
 
 	void pull_and_download_url(task_data::task_map_ptr map_ptr);
 
+	void pull_and_work_url(task_data::task_map_ptr map_ptr);
 
-	inline size_t crawl_page( std::vector<wchar_t>& body, std::set<std::string>* url_list, std::string page_url );
-	inline size_t crawl_page( const std::wstring& body, std::set<std::string>* url_list, std::string page_url );
-	size_t crawl_page( const std::string& body, std::set<std::string>* url_list, const std::string& page_url );
-	size_t crawl_page(const char* p_body, size_t size_body, std::set<std::string>* url_list, const std::string& page_url );
+
+	size_t crawl_page(const char* p_body, size_t size_body, std::set<std::string>* url_list, const std::string& page_url, size_t domain_sub_level = 2 );
 
 
 	void run_policy(task_data::task_map_ptr map_ptr, size_t url_no, policy_api::policy_work_ptr policy_ptr);

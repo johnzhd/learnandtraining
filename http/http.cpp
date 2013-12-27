@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "http.hpp"
 
+#include <boost/function.hpp>
+
 #include "http_tools.hpp"
 
 #include "iocp_server.hpp"
-#include <boost/function.hpp>
 
 
 namespace http

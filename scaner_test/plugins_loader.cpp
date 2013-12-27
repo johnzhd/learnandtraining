@@ -3,6 +3,10 @@
 
 #include "file_base_tools.h"
 
+#include "html_parser_api.h"
+
+
+
 namespace plugins_loader
 {
 #ifdef _MSC_VER
@@ -61,51 +65,40 @@ namespace plugins_loader
 #endif
 	};
 
-	typedef size_t (*func_html_parser_run)(const std::string& body, std::set<std::string>& v_out, std::string page_url);
-	func_html_parser_run call_func_html_parser_run = nullptr;
-
-	typedef size_t (*func_html_parser_run_1)(const char* p_body, size_t size_body, std::set<std::string>& v_out, std::string page_url);
-	func_html_parser_run_1 call_func_html_parser_run_1 = nullptr;
-	inline static bool init_html_parser()
-	{
-		auto h_temp = open_library("html_parser");
-		if ( h_temp == nullptr )
-			return false;
-
-		call_func_html_parser_run = (func_html_parser_run)load_func(h_temp, "API_html_parser");
-		if ( call_func_html_parser_run == nullptr )
-		{
-			close_library(h_temp);
-			return false;
-		}
-
-		call_func_html_parser_run_1 = (func_html_parser_run_1)load_func(h_temp, "API_html_parser_1");
-		if ( call_func_html_parser_run_1 == nullptr )
-		{
-			close_library(h_temp);
-			return false;
-		}
-
-		vh_plugins.push_back(h_temp);
-		return true;
-	}
-
-	size_t plugins_server::html_parser(const std::string& body, std::set<std::string>& v_out, std::string page_url)
-	{
-		if ( call_func_html_parser_run )
-			return call_func_html_parser_run(body,v_out,page_url);
-		return 0;
-	}
-
-	size_t plugins_server::html_parser(const char* p_body, size_t size_body, std::set<std::string>& v_out, std::string page_url)
-	{
-		if ( call_func_html_parser_run_1 )
-			return call_func_html_parser_run_1(p_body,size_body,v_out,page_url);
-		return 0;
-	}
+};
 
 
 
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+// plugins
+//
+
+namespace plugins_loader
+{
+};
+
+
+
+
+//
+// plugins
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////
+// System
+//
+
+
+namespace plugins_loader
+{
+
+	
 
 	plugins_server::plugins_server()
 	{
@@ -122,12 +115,6 @@ namespace plugins_loader
 	bool plugins_server::init()
 	{
 		// load html parser
-		if( false == init_html_parser() )
-		{
-			clear();
-			return false;
-		}
-
 		return true;
 	};
 
@@ -141,31 +128,8 @@ namespace plugins_loader
 		vh_plugins.clear();
 	};
 
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 };
+
 
 namespace plugins_loader
 {

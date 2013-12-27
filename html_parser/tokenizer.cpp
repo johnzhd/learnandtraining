@@ -42,7 +42,7 @@
 // prevents parse error position from being messed up by possible mark/resets in
 // temporary buffer manipulation.
 
-
+#include "stdafx.h"
 #include "tokenizer.h"
 
 #include <assert.h>

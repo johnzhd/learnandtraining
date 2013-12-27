@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 // Author: jdtang@google.com (Jonathan Tang)
-
+#include "stdafx.h"
 #include <assert.h>
 #include <ctype.h>
 #include <stdarg.h>
@@ -39,10 +39,12 @@
 #define TERMINATOR { "", 0 }
 
 static void* malloc_wrapper(void* unused, size_t size) {
+	(unused);
   return malloc(size);
 }
 
 static void free_wrapper(void* unused, void* ptr) {
+	(unused);
   free(ptr);
 }
 

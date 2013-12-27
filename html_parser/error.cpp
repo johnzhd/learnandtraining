@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 // Author: jdtang@google.com (Jonathan Tang)
-
+#include "stdafx.h"
 #include "error.h"
 
 #include <assert.h>
@@ -37,14 +37,25 @@ static int print_message(GumboParser* parser, GumboStringBuffer* output,
   va_list args;
   va_start(args, format);
   int remaining_capacity = output->capacity - output->length;
+#ifdef _MSC_VER
+  int bytes_written = vsnprintf_s((char*)(output->data + output->length),(output->capacity - output->length),
+                                remaining_capacity, format, args);
+#else
   int bytes_written = vsnprintf((char*)(output->data + output->length),
                                 remaining_capacity, format, args);
+
+#endif;
   if (bytes_written > remaining_capacity) {
     gumbo_string_buffer_reserve(
         parser, output->capacity + bytes_written, output);
     remaining_capacity = output->capacity - output->length;
+#ifdef _MSC_VER
+	bytes_written = vsnprintf_s((char*)(output->data + output->length),(output->capacity - output->length),
+                              remaining_capacity, format, args);
+#else
     bytes_written = vsnprintf((char*)(output->data + output->length),
                               remaining_capacity, format, args);
+#endif
   }
   output->length += bytes_written;
   va_end(args);
@@ -55,7 +66,7 @@ static void print_tag_stack(
     GumboParser* parser, const GumboParserError* error,
     GumboStringBuffer* output) {
   print_message(parser, output, "  Currently open tags: ");
-  for (int i = 0; i < error->tag_stack.length; ++i) {
+  for (unsigned int i = 0; i < error->tag_stack.length; ++i) {
     if (i) {
       print_message(parser, output, ", ");
     }
@@ -127,15 +138,16 @@ static const char* find_last_newline(
 // location.  Returns a character pointer to that newline, or a pointer to the
 // terminating null byte if this is the last line.
 static const char* find_next_newline(
-    const char* original_text, const char* error_location) {
-  const char* c = error_location;
-  for (; *c && *c != '\n'; ++c);
-  return c;
+	const char* original_text, const char* error_location) {
+		(original_text);
+		const char* c = error_location;
+		for (; *c && *c != '\n'; ++c);
+		return c;
 }
 
 GumboError* gumbo_add_error(GumboParser* parser) {
   int max_errors = parser->_options->max_errors;
-  if (max_errors >= 0 && parser->_output->errors.length >= max_errors) {
+  if (max_errors >= 0 && parser->_output->errors.length >= (unsigned int)max_errors) {
     return NULL;
   }
   GumboError* error = (GumboError*)gumbo_parser_allocate(parser, sizeof(GumboError));
@@ -251,7 +263,7 @@ void gumbo_init_errors(GumboParser* parser) {
 }
 
 void gumbo_destroy_errors(GumboParser* parser) {
-  for (int i = 0; i < parser->_output->errors.length; ++i) {
+  for (unsigned int i = 0; i < parser->_output->errors.length; ++i) {
     gumbo_error_destroy(parser, (GumboError*)parser->_output->errors.data[i]);
   }
   gumbo_vector_destroy(parser, &parser->_output->errors);

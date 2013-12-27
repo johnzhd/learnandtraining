@@ -258,6 +258,7 @@ namespace http_tools
 	{
 		return _stricmp( protocal.c_str(), "https" ) == 0;
 	};
+
 };
 
 namespace http_tools

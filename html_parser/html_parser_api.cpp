@@ -6,8 +6,10 @@
 #include <algorithm>
 
 #include "gumbo.h"
+namespace html_parser
+{
 
-inline std::string get_domain( const std::string & url_ )
+static inline std::string get_domain( const std::string & url_ )
 {
 	auto npos = url_.find("://");
 	if ( npos == std::string::npos )
@@ -23,7 +25,7 @@ inline std::string get_domain( const std::string & url_ )
 
 
 
-inline bool match_domain( std::string domain_base, std::string domain2 )
+static inline bool match_domain( std::string domain_base, std::string domain2, size_t domain_level )
 {
 	auto it1 = domain_base.rbegin();
 	auto it2 = domain2.rbegin();
@@ -32,7 +34,7 @@ inline bool match_domain( std::string domain_base, std::string domain2 )
 	{
 		if ( *it1 != *it2 )
 		{
-			return dot_count >= 2;
+			return dot_count >= domain_level;
 		}
 
 		if ( *it1 == '.' )
@@ -42,7 +44,7 @@ inline bool match_domain( std::string domain_base, std::string domain2 )
 	return it1 == domain_base.rend();
 };
 
-static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::string& page_url)
+static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::string& page_url, size_t domain_level)
 {
 	GumboAttribute* href;
 	switch ( root->v.element.tag )
@@ -61,7 +63,7 @@ static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::
 					{
 						str = page_url+str;
 					}
-					else if ( false == match_domain(get_domain(page_url), get_domain(str)) )
+					else if ( false == match_domain(get_domain(page_url), get_domain(str), domain_level) )
 					{
 						break;
 					};
@@ -87,58 +89,26 @@ static void search_for_links(GumboNode*root, std::set<std::string>& v_out, std::
 	{
 		if ( static_cast<GumboNode*>(children->data[i])->type != GUMBO_NODE_ELEMENT )
 			continue;
-		search_for_links(static_cast<GumboNode*>(children->data[i]),v_out, page_url);
+		search_for_links(static_cast<GumboNode*>(children->data[i]),v_out, page_url,domain_level);
 	}
 
 };
 
-size_t API_html_parser(const std::string& body, std::set<std::string>& v_out, std::string str_domain)
+size_t API_html_parser(const char* p_body, size_t size_body, std::set<std::string>& v_out,
+						 std::string str_domain, size_t domain_sub_level)
 {
 	size_t s = v_out.size();
 
-	// set locale just for avoid isspace assert
-#ifdef _MSC_VER
-	char* old_locale = _strdup( setlocale(LC_CTYPE,NULL) );
-	setlocale( LC_CTYPE, "chs" );
-#endif
-
-	GumboOutput* output = gumbo_parse_with_options(&kGumboDefaultOptions, body.c_str(), body.length());
-	
-#ifdef _MSC_VER
-	setlocale( LC_CTYPE, old_locale);
-	free(old_locale);
-#endif
-
-	if (output->root->type == GUMBO_NODE_ELEMENT) {
-		search_for_links(output->root,v_out,str_domain);
-	}
-	gumbo_destroy_output(&kGumboDefaultOptions, output);
-
-	return v_out.size() - s;
-};
-
-size_t API_html_parser_1(const char* p_body, size_t size_body, std::set<std::string>& v_out, std::string str_domain)
-{
-	size_t s = v_out.size();
-	
-#if 0
-	char* old_locale = _strdup( setlocale(LC_CTYPE,NULL) );
-	setlocale( LC_CTYPE, "chs" );
-#endif
 
 	GumboOutput* output = gumbo_parse_with_options(&kGumboDefaultOptions, p_body, size_body);
 
 
-#if 0
-	setlocale( LC_CTYPE, old_locale);
-	free(old_locale);
-#endif
-
 	if (output->root->type == GUMBO_NODE_ELEMENT) {
-		search_for_links(output->root,v_out,str_domain);
+		search_for_links(output->root,v_out,str_domain,domain_sub_level);
 	}
 	gumbo_destroy_output(&kGumboDefaultOptions, output);
 
 	return v_out.size() - s;
 };
 
+}

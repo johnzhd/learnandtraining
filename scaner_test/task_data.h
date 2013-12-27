@@ -33,12 +33,15 @@ public:
 	void clear();
 public:
 	std::string main_url;
+	size_t domain_sub_level_min; // 至少匹配多少级域名
+	size_t ttl_max; // 至多爬行多少跳
+
 	std::string base_head;
 	std::string base_trigger;
 public:
 	//******************************
 	//* trigger meaning list:
-	//*
+	//* Http: 301 ttl count / content-type recv / 
 	//******************************
 
 	std::string running_trigger;
@@ -46,53 +49,79 @@ public:
 	std::string running_head;
 public:
 	boost::mutex update_mutex;
-	bool update_running_cookie( std::string cookie )
-	{
-		boost::mutex::scoped_lock locker(update_mutex);
-		running_cookie = cookie;
-		return true;
-	};
-	bool get_running_cookie( std::string& cookie )
-	{
-		boost::mutex::scoped_lock locker(update_mutex);
-		cookie = running_cookie;
-		return true;
-	};
+	bool update_running_cookie( std::string cookie );
+	bool get_running_cookie( std::string& cookie );
 
 public:
 	static std::string make_union_id( std::string url );
+public:
+	void format_start();
 
 };
 
 
+class net_pack
+{
+public:
+	net_pack();
+	~net_pack();
 
+	// origin zone
+public:
+	std::vector<unsigned char> origin_stream_request;
+	std::vector<unsigned char> origin_stream_response;
+
+
+	// http zone
+public:
+	int http_state;
+	std::string head;
+
+};
+
+typedef boost::shared_ptr<net_pack> net_pack_ptr;
 
 // mini task struct
 class task_url_struct
 {
 public:
-	task_url_struct(std::string url);
+	task_url_struct(std::string url); // will be discard
+
 	~task_url_struct();
 public:
 	std::string url_origin;
-	bool b_post;
-	std::vector<unsigned char> first_send;
-	std::vector<unsigned char> first_recv;
 
-	std::wstring translate_body;
+	std::string url_refrence;
+	
+	std::vector<unsigned char> first_send; // will be discard
+	std::vector<unsigned char> first_recv; // will be discard
+
+	std::wstring translate_body; // will be discard
 
 	// copy from task struct
 	// main url don't remove base mark
 	// other urls remove base mark; add page mark
-	std::string running_trigger;
+	std::string running_trigger; // for policy
+	
+	size_t ttl;
 	
 	// -2 is new
 	// -1 is be fresh out
 	// 0 is finished
 	// n is running n threads
-	std::atomic_int running_thread;
+	std::atomic_int running_thread; // for policy
+public:
+	http_tools::send_package_type b_post;
+	std::map<std::string,std::vector<unsigned char>> params_data;
+
+	std::string cookie_data;
+
+public:
+	std::vector<net_pack_ptr> http_packages;
+	net_pack_ptr get_last_page();
 };
 
+ 
 //err page
 enum err_page_type
 {
@@ -100,6 +129,7 @@ enum err_page_type
 	Self_200,
 	Main_Page
 };
+
 class task_err_page
 {
 public:
@@ -169,9 +199,12 @@ public:
 
 
 
-	bool insert_new_url( std::string url );
+	inline bool insert_new_url( std::string url );
 	bool insert_new_url( task_url_struct_ptr url );
 	bool insert_new_url( std::set<std::string>& url_list );
+
+	void insert_new_url_params( std::string page, std::map<std::string,std::vector<unsigned char>>& params,
+		std::string url_ref, bool post );
 
 	bool fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr );
 	void finished_one_url( task_url_struct_ptr url_ptr );

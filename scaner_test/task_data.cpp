@@ -6,6 +6,10 @@
 
 #include <boost/date_time/local_time/local_time.hpp> 
 
+#include "http_tools.hpp"
+
+#include "policy_work.h"
+
 
 namespace task_data
 {
@@ -13,7 +17,8 @@ namespace task_data
 	//
 	/////////////////////////////////////////////////////////////////////////////
 	task_start_struct::task_start_struct(std::string url, std::string head, std::string trigger)
-		:main_url(url),base_head(head),base_trigger(trigger),running_trigger(""),running_cookie(""),running_head(""),update_mutex()
+		:main_url(url),base_head(head),base_trigger(trigger),running_trigger(""),running_cookie(""),running_head(""),update_mutex(),
+		domain_sub_level_min(2),ttl_max(65535)
 	{
 		Debug_log("%s %08x.\n", __FUNCTION__, reinterpret_cast<size_t>(this));
 	};
@@ -32,6 +37,8 @@ namespace task_data
 		running_trigger.clear();
 		running_cookie.clear();
 		running_head.clear();
+		ttl_max = 65535;
+		domain_sub_level_min = 2;
 	};
 
 	std::string task_start_struct::make_union_id( std::string url )
@@ -53,7 +60,35 @@ namespace task_data
 
 	};
 
-	
+	bool task_start_struct::update_running_cookie( std::string cookie )
+	{
+		boost::mutex::scoped_lock locker(update_mutex);
+		running_cookie = cookie;
+		return true;
+	};
+	bool task_start_struct::get_running_cookie( std::string& cookie )
+	{
+		boost::mutex::scoped_lock locker(update_mutex);
+		cookie = running_cookie;
+		return true;
+	};
+
+	void task_start_struct::format_start()
+	{
+		boost::mutex::scoped_lock locker(update_mutex);
+
+		main_url = http_tools::format_url(main_url);
+		base_head = http_tools::format_head(base_head);
+		base_trigger = policy_api::trigger_base::format_trigger(base_trigger);
+
+		running_trigger = base_trigger;
+		running_head = base_head;
+		http_tools::get_new_cookie( running_head, "", running_cookie);
+
+		if ( domain_sub_level_min == 0 || domain_sub_level_min > 255 )
+			domain_sub_level_min = 2;
+
+	};
 
 	
 
@@ -192,8 +227,9 @@ bool task_map::insert_new_url( task_url_struct_ptr url )
 	if ( url == nullptr )
 		return false;
 	
-	url->url_origin = http_tools::format_url(url->url_origin);
+	http_tools::format_url_params(url->url_origin, url->params_data);
 	boost::mutex::scoped_lock lock(url_mutex);
+
 
 	size_t no = next_no++; // maybe use other algorithm
 	try
@@ -232,6 +268,41 @@ bool task_map::insert_new_url( std::set<std::string>& url_list )
 	size_t no = next_no;
 	Noise_log("[%s] next no %d.\n", __FUNCTION__, no );
 	return b;
+};
+
+void task_map::insert_new_url_params( std::string page, std::map<std::string,std::vector<unsigned char>>& params,
+	std::string url_ref, bool post )
+{
+	assert(page.empty() != true);
+	if ( page.empty() )
+		return ;
+
+	http_tools::format_url_params(page, params);
+
+	size_t no = next_no++; // maybe use other algorithm
+	{
+		boost::mutex::scoped_lock lock(url_mutex);
+		std::pair<std::map<std::string,size_t>::iterator,bool> ret;
+		ret = url_no_map.insert(std::pair<std::string,size_t>(page,no));
+		if ( ret.second == false ) // already exist
+			return ;
+
+		assert(no == ret.first->second);
+		no_url_map.insert(std::pair<size_t,std::string>(ret.first->second,page));
+
+
+		// prepair for make up send package
+		task_url_struct_ptr ptr;
+		ptr.reset(new task_url_struct(page) );
+
+		ptr->b_post = post;
+
+		ptr->params_data.swap( params );
+		ptr->url_refrence = url_ref;
+
+		url_list.insert(std::pair<size_t,task_url_struct_ptr>(ret.first->second, ptr));
+	}
+	return ;
 };
 
 bool task_map::fresh_one_url( size_t&url_no, task_url_struct_ptr& url_ptr )

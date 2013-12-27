@@ -43,6 +43,9 @@
     <Filter Include="policy">
       <UniqueIdentifier>{d3ba8b73-8b39-4d1c-9a04-ac9e7bf4d3e7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="task\http">
+      <UniqueIdentifier>{4396777f-822d-4b88-83c0-aab170648c05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -114,6 +117,9 @@
     <ClInclude Include="policy_base.h">
       <Filter>policy</Filter>
     </ClInclude>
+    <ClInclude Include="task_http.h">
+      <Filter>task\http</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -184,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="policy_base.cpp">
       <Filter>policy</Filter>
+    </ClCompile>
+    <ClCompile Include="task_http.cpp">
+      <Filter>task\http</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

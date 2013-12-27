@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 // Author: jdtang@google.com (Jonathan Tang)
-
+#include "stdafx.h"
 #include "vector.h"
 
 #include <assert.h>

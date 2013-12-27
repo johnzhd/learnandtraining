@@ -41,17 +41,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)socket;E:\boost_1_55_0;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)zlib;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)socket;E:\boost_1_55_0;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)zlib;$(SolutionDir)html_parser;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)$(Configuration)\;E:\boost_1_55_0\stage\lib;$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(SolutionDir)socket;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(ReferencePath)</ReferencePath>
-    <SourcePath>$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)html_parser;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)socket;E:\boost_1_55_0;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)zlib;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)socket;E:\boost_1_55_0;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)zlib;$(SolutionDir)html_parser;$(IncludePath)</IncludePath>
     <LibraryPath>E:\boost_1_55_0\stage\lib;$(SolutionDir)$(Configuration)\;$(SolutionDir)bin;$(LibraryPath)</LibraryPath>
     <ReferencePath>$(SolutionDir)socket;$(SolutionDir)http;$(SolutionDir)task;$(ProjectDir);$(ReferencePath)</ReferencePath>
-    <SourcePath>$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)liblua\lua_5_2_2\src;$(SolutionDir)tinyxml;$(SolutionDir)html_parser;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -67,7 +67,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtcmalloc_minimal-debug.lib;html_parser.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
     </Link>
   </ItemDefinitionGroup>
@@ -88,7 +88,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
-      <AdditionalDependencies>libtcmalloc_minimal.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtcmalloc_minimal.lib;html_parser.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -119,6 +119,7 @@
     <ClInclude Include="system_log.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="task_data.h" />
+    <ClInclude Include="task_http.h" />
     <ClInclude Include="task_work.h" />
     <ClInclude Include="thread_pool.h" />
     <ClInclude Include="thread_work_queue.h" />
@@ -152,6 +153,7 @@
     <ClCompile Include="system.cpp" />
     <ClCompile Include="system_log.cpp" />
     <ClCompile Include="task_data.cpp" />
+    <ClCompile Include="task_http.cpp" />
     <ClCompile Include="task_work.cpp" />
     <ClCompile Include="test_http_main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
